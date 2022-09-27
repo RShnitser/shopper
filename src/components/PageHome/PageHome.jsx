@@ -1,39 +1,103 @@
 import React from "react";
-import { fetchProducts } from "../../services";
+import { fetchCategories, fetchProducts } from "../../services";
 
 class PageHome extends React.Component {
 
     state = {
         loading: true,
-        products: []
+        error: false,
+        products: [],
+        categories: [],
+        params: {
+            query: "",
+            category_id: "",
+        }
     }
-
-    // fetchProducts = async () => {
-        
-    //     const {data} = await commerce.products.list();
-
-    //     this.setState({
-    //         products: data,
-    //         loading: false
-    //     });
-    // }
 
     async componentDidMount() {
         
-        const result = await fetchProducts();
+        try {
+            const products = fetchProducts();
+            const categories = fetchCategories();
 
-        if(result && result.response.ok) {
+            const [resProd, resCat] = await Promise.all([products, categories]);
+    
+          
+            if(resProd && resProd.response.ok && resCat && resCat.response.ok) {
+    
+                const prodData = resProd.data;
+                const catData = resCat.data;
 
+                
+                this.setState({
+                    products: prodData,
+                    categories: catData,
+                    loading: false
+                });
+            }
+            else {
+                this.setState({
+                    loading: false
+                });
+            }
+        }
+        catch(error) {
+            //console.error(error);
             this.setState({
-                products: result.data,
-                loading: false
+                loading: false,
+                error: true,
             });
         }
     }
 
+    searchProducts = async () => {
+        
+        const params = this.state.params;
+
+        for(const key of Object.keys(params)) {
+             if(params[key].length === 0) {
+                 delete params[key];
+             }
+        }
+
+        try {
+            
+            const result = await fetchProducts(params);
+
+          
+            if(result && result.response.ok) {
+    
+                const data = result.data;
+
+                this.setState({
+                    products: data,
+                });
+            }
+        }
+        catch {
+            this.setState({
+                error: true,
+            });
+        }
+    }
+
+    handleOnChange = ({target: {name, value}}) => {
+
+        this.setState(function(prevState){
+                
+            return({
+                //...prevState,
+                params: {
+                    ...prevState.params,
+                    [name]: value,
+                }
+            });
+        });   
+    }
+
     render() {
 
-        const{ loading, products} = this.state;
+        const{ loading, products, categories, params} = this.state;
 
         let display;
 
@@ -50,6 +114,27 @@ class PageHome extends React.Component {
             <div>
                 <div>
                     <div>Shopper</div>
+
+                    <select name="category_id" onChange={this.handleOnChange}>
+                        <option value="">All</option>
+                        {categories && categories.map(function(category){
+                            return(<option key={category.id} value={category.id}>{category.name}</option>);
+                        })}
+                    </select>
+
+                    <label htmlFor="search">
+                        <input type="text" id="search" name="query" value={params.query} onChange={this.handleOnChange}/>
+                    </label>
+
+                    <button type="button" onClick={this.searchProducts}>
+                        <i className="fa-solid fa-magnifying-glass"></i>
+                    </button>
+
+                    <ul>
+                        <li>Sign In</li>
+                        <li>Create Account</li>
+                    </ul>
+
                     <div><i className="fa-solid fa-cart-shopping"></i></div>
                 </div>
                 {display}
