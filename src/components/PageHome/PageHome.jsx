@@ -1,5 +1,5 @@
 import React from "react";
-import { commerce } from "../../services";
+import { fetchProducts } from "../../services";
 
 class PageHome extends React.Component {
 
@@ -8,18 +8,27 @@ class PageHome extends React.Component {
         products: []
     }
 
-    fetchProducts = async () => {
+    // fetchProducts = async () => {
         
-        const {data} = await commerce.products.list();
+    //     const {data} = await commerce.products.list();
 
-        this.setState({
-            products: data,
-            loading: false
-        });
-    }
+    //     this.setState({
+    //         products: data,
+    //         loading: false
+    //     });
+    // }
 
-    componentDidMount() {
-        this.fetchProducts();
+    async componentDidMount() {
+        
+        const result = await fetchProducts();
+
+        if(result && result.response.ok) {
+
+            this.setState({
+                products: result.data,
+                loading: false
+            });
+        }
     }
 
     render() {
