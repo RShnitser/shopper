@@ -1,5 +1,33 @@
+:root {
+  --background-color: white;
+  --font-color: black;
+  --red: #cc2c53;
+  --blue: #415a92;
+  --light-gray: #f5f5f5;
+  --gray: lightgray;
+  --dark-gray: #545454;
+  --error-bg: #fdf6f5;
+
+  --font-18: 1.125rem;
+}
+
 *,
 :before,
 :after {
   box-sizing: border-box;
 }
+
+.center-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  /* width: 100%;
+  height: 100vh; */
+}
+
+.shadow {
+  box-shadow: 0 0 10px var(--dark-gray);
+}
+
+
