@@ -1,65 +1,81 @@
-import React from "react";
-import { fetchCategories, fetchProducts } from "../../services";
+import React, { useState, useEffect } from "react";
+import { fetchCategories, fetchProducts } from "../../scripts/services";
 import "./PageHome.css";
 
-class PageHome extends React.Component {
+const PageHome = () => {
 
-    state = {
-        loading: true,
-        error: false,
-        products: [],
-        categories: [],
-        params: {
-            query: "",
-            category_id: "",
-        }
-    }
+    // state = {
+    //     loading: true,
+    //     error: false,
+    //     products: [],
+    //     categories: [],
+    //     params: {
+    //         query: "",
+    //         category_id: "",
+    //     }
+    // }
 
-    async componentDidMount() {
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(false);
+    const [products, setProducts] = useState([]);
+    const [categories, setCategories] = useState([]);
+    const [params, setParams] = useState({query: "", category_id: ""});
+
+    useEffect(() => {
         
-        try {
-            const products = fetchProducts();
-            const categories = fetchCategories();
+        const fetchData = async () => {
 
-            const [resProd, resCat] = await Promise.all([products, categories]);
+            try {
+                const products = fetchProducts();
+                const categories = fetchCategories();
     
-          
-            if(resProd && resProd.response.ok && resCat && resCat.response.ok) {
+                const [resProd, resCat] = await Promise.all([products, categories]);
+        
+              
+                if(resProd && resProd.response.ok && resCat && resCat.response.ok) {
+        
+                    const prodData = resProd.data;
+                    const catData = resCat.data;
     
-                const prodData = resProd.data;
-                const catData = resCat.data;
-
-                
-                this.setState({
-                    products: prodData,
-                    categories: catData,
-                    loading: false
-                });
+                    
+                    // this.setState({
+                    //     products: prodData,
+                    //     categories: catData,
+                    //     loading: false
+                    // });
+                    setProducts(prodData);
+                    setCategories(catData);
+                    setLoading(false);
+                }
+                else {
+                    // this.setState({
+                    //     loading: false
+                    // });
+                    setLoading(false);
+                }
             }
-            else {
-                this.setState({
-                    loading: false
-                });
+            catch(error) {
+                //console.error(error);
+                // this.setState({
+                //     loading: false,
+                //     error: true,
+                // });
+                setLoading(false);
+                setError(true);
             }
         }
-        catch(error) {
-            //console.error(error);
-            this.setState({
-                loading: false,
-                error: true,
-            });
-        }
-    }
+        fetchData();
+    }, []);
 
-    handleOnSubmit = async (e) => {
+    const handleOnSubmit = async (e) => {
     
         e.preventDefault();
-        await this.searchProducts();
+        await searchProducts();
     }
 
-    searchProducts = async () => {
+    const searchProducts = async () => {
         
-        const params = this.state.params;
+        //const params = this.state.params;
 
         for(const key of Object.keys(params)) {
              if(params[key].length === 0) {
@@ -76,36 +92,39 @@ class PageHome extends React.Component {
     
                 const data = result.data;
 
-                this.setState({
-                    products: data,
-                });
+                // this.setState({
+                //     products: data,
+                // });
+                setProducts(data);
             }
         }
         catch {
            
-            this.setState({
-                products: [],
-            });
+            // this.setState({
+            //     products: [],
+            // });
+            setProducts({});
         }
     }
 
-    handleOnChange = ({target: {name, value}}) => {
+    const handleOnChange = ({target: {name, value}}) => {
 
-        this.setState(function(prevState){
+        // this.setState(function(prevState){
                 
-            return({
-                //...prevState,
-                params: {
-                    ...prevState.params,
-                    [name]: value,
-                }
-            });
-        });   
+        //     return({
+        //         //...prevState,
+        //         params: {
+        //             ...prevState.params,
+        //             [name]: value,
+        //         }
+        //     });
+        // });  
+        setParams({...params, [name] : value}); 
     }
 
-    render() {
+    //render() {
 
-        const{ loading, products, categories, params} = this.state;
+        //const{ loading, products, categories, params} = this.state;
 
         let display;
 
@@ -122,39 +141,39 @@ class PageHome extends React.Component {
             }
         }
 
-        return(
-            <div className="center-container shadow">
-                <div className="home-nav">
-                    <div>Shopper</div>
+        let result =  <div className="center-container shadow">
+        <div className="home-nav">
+            <div>Shopper</div>
 
-                    <form onSubmit={this.handleOnSubmit}>
-                        <select name="category_id" onChange={this.handleOnChange}>
-                            <option value="">All</option>
-                            {categories && categories.map(function(category){
-                                return(<option key={category.id} value={category.id}>{category.name}</option>);
-                            })}
-                        </select>
+            <form onSubmit={handleOnSubmit}>
+                <select name="category_id" onChange={handleOnChange}>
+                    <option value="">All</option>
+                    {categories && categories.map(function(category){
+                        return(<option key={category.id} value={category.id}>{category.name}</option>);
+                    })}
+                </select>
 
-                        <label htmlFor="search">
-                            <input type="text" id="search" name="query" value={params.query} onChange={this.handleOnChange}/>
-                        </label>
+                <label htmlFor="search">
+                    <input type="text" id="search" name="query" value={params.query} onChange={handleOnChange}/>
+                </label>
 
-                        <button type="submit" onClick={this.searchProducts}>
-                            <i className="fa-solid fa-magnifying-glass"></i>
-                        </button>
-                    </form>
+                <button type="submit" onClick={searchProducts}>
+                    <i className="fa-solid fa-magnifying-glass"></i>
+                </button>
+            </form>
 
-                    <ul>
-                        <li>Sign In</li>
-                        <li>Create Account</li>
-                    </ul>
+            <ul>
+                <li>Sign In</li>
+                <li>Create Account</li>
+            </ul>
 
-                    <div><i className="fa-solid fa-cart-shopping"></i></div>
-                </div>
-                {display}
-            </div>
-        );
-    }
+            <div><i className="fa-solid fa-cart-shopping"></i></div>
+        </div>
+        {display}
+    </div>
+
+        return(result);
+    //}
 }
 
 export default PageHome;
