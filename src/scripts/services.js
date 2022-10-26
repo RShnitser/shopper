@@ -27,14 +27,22 @@ export async function fetchProducts(params={}) {
     
                 const json = await response.json();
     
-                const data = json.data.map(function(product) {
+                const products = json.data.map(function(product) {
                     return ({
                         name: product.name,
-                        description: product.description,
+                        description: product.description.replace('<p>','').replace('</p>', ''),
                         price: product.price.raw,
+                        image: product.image.url,
                     });
                 });
-    
+
+                const pagination = json.meta.pagination;
+
+                const data = {
+                    products: products,
+                    pagination: pagination,
+                }
+
                 success({response, data});
             }
             else {

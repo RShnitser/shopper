@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { fetchCategories, fetchProducts } from "../../scripts/services";
 import "./PageHome.css";
 
@@ -21,6 +21,41 @@ const PageHome = () => {
     const [categories, setCategories] = useState([]);
     const [params, setParams] = useState({query: "", category_id: ""});
 
+    const searchProducts = useCallback(async () => {
+        
+        //const params = this.state.params;
+        const paramsCopy = {};
+
+        for(const key of Object.keys(params)) {
+             if(params[key].length > 0) {
+                 paramsCopy[key] = params[key];
+             }
+        }
+
+        try {
+            
+            const result = await fetchProducts(paramsCopy);
+
+          
+            if(result && result.response.ok) {
+    
+                const data = result.data.products;
+
+                // this.setState({
+                //     products: data,
+                // });
+                setProducts(data);
+            }
+        }
+        catch {
+           
+            // this.setState({
+            //     products: [],
+            // });
+            setProducts([]);
+        }
+    }, [params]);
+
     useEffect(() => {
         
         const fetchData = async () => {
@@ -34,7 +69,7 @@ const PageHome = () => {
               
                 if(resProd && resProd.response.ok && resCat && resCat.response.ok) {
         
-                    const prodData = resProd.data;
+                    const prodData = resProd.data.products;
                     const catData = resCat.data;
     
                     
@@ -67,44 +102,17 @@ const PageHome = () => {
         fetchData();
     }, []);
 
+    useEffect(() => {
+        const search = async () => {
+            await searchProducts();
+        }
+        search();
+    },[params, searchProducts]);
+
     const handleOnSubmit = async (e) => {
     
         e.preventDefault();
         await searchProducts();
-    }
-
-    const searchProducts = async () => {
-        
-        //const params = this.state.params;
-
-        for(const key of Object.keys(params)) {
-             if(params[key].length === 0) {
-                 delete params[key];
-             }
-        }
-
-        try {
-            
-            const result = await fetchProducts(params);
-
-          
-            if(result && result.response.ok) {
-    
-                const data = result.data;
-
-                // this.setState({
-                //     products: data,
-                // });
-                setProducts(data);
-            }
-        }
-        catch {
-           
-            // this.setState({
-            //     products: [],
-            // });
-            setProducts({});
-        }
     }
 
     const handleOnChange = ({target: {name, value}}) => {
@@ -133,7 +141,8 @@ const PageHome = () => {
         }
         else {
             display = products && products.map(function(product) {
-                return <div key={product.name}>{product.name}</div>;
+                // return <div key={product.name}>{product.name}</div>;
+                return <Product key={product.name} product={product} />;
             });
 
             if(products && products.length === 0) {
@@ -141,7 +150,7 @@ const PageHome = () => {
             }
         }
 
-        let result =  <div className="center-container shadow">
+        const result =  <div className="center-container shadow">
         <div className="home-nav">
             <div>Shopper</div>
 
@@ -174,6 +183,21 @@ const PageHome = () => {
 
         return(result);
     //}
+}
+
+const Product = (props) => {
+
+const {product: {image, name, description}} = props;
+
+ const result = <>
+    <div>
+        <img src={image} alt="product" />
+    </div>
+    <div>{name}</div>
+    <div>{description}</div>
+ </>
+
+ return result;
 }
 
 export default PageHome;
