@@ -16,6 +16,8 @@ export async function fetchProducts(params={}) {
                 url.searchParams.append(key, params[key]);
             }
 
+            //url.searchParams.append("limit", 5);
+
             const headers = {
                 "X-Authorization": COMMERCE_API,
                 "Accept": "application/json",
@@ -41,6 +43,13 @@ export async function fetchProducts(params={}) {
                 const data = {
                     products: products,
                     pagination: pagination,
+                    // pagination: {
+                    //     total: parseInt(pagination.total),
+                    //     per_page: parseInt(pagination.per_page),
+                    //     current_page: parseInt(pagination.current_page),
+                    //     total_pages: parseInt(pagination.total_pages),
+                    //     links: pagination.links,
+                    // },
                 }
 
                 success({response, data});

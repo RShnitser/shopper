@@ -15,11 +15,16 @@ const PageHome = () => {
     //     }
     // }
 
+    // CONST_INIT_PARAMS = {
+
+    // }
+
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(false);
     const [products, setProducts] = useState([]);
+    const [pagination, setPagination] = useState({});
     const [categories, setCategories] = useState([]);
-    const [params, setParams] = useState({query: "", category_id: ""});
+    const [params, setParams] = useState({query: "", category_id: "", page: ""});
 
     const searchProducts = useCallback(async () => {
         
@@ -39,12 +44,14 @@ const PageHome = () => {
           
             if(result && result.response.ok) {
     
-                const data = result.data.products;
+                const products = result.data.products;
+                const pagination = result.data.pagination;
 
                 // this.setState({
                 //     products: data,
                 // });
-                setProducts(data);
+                setProducts(products);
+                setPagination(pagination);
             }
         }
         catch {
@@ -53,6 +60,7 @@ const PageHome = () => {
             //     products: [],
             // });
             setProducts([]);
+            setPagination({});
         }
     }, [params]);
 
@@ -70,6 +78,7 @@ const PageHome = () => {
                 if(resProd && resProd.response.ok && resCat && resCat.response.ok) {
         
                     const prodData = resProd.data.products;
+                    const pagination = resProd.data.pagination;
                     const catData = resCat.data;
     
                     
@@ -79,6 +88,7 @@ const PageHome = () => {
                     //     loading: false
                     // });
                     setProducts(prodData);
+                    setPagination(pagination);
                     setCategories(catData);
                     setLoading(false);
                 }
@@ -127,6 +137,7 @@ const PageHome = () => {
         //         }
         //     });
         // });  
+        console.log(name, value);
         setParams({...params, [name] : value}); 
     }
 
@@ -134,60 +145,128 @@ const PageHome = () => {
 
         //const{ loading, products, categories, params} = this.state;
 
-        let display;
-
+        let result = null;
+        
         if(loading) {
-            display = <div>Loading...</div>;
+            result = <div>Loading...</div>;
         }
         else {
-            display = products && products.map(function(product) {
-                // return <div key={product.name}>{product.name}</div>;
-                return <Product key={product.name} product={product} />;
-            });
-
+            let display = null;
             if(products && products.length === 0) {
                 display = <div>No results to display</div>
             }
-        }
+            else {
 
-        const result =  <div className="center-container shadow">
-        <div className="home-nav">
-            <div>Shopper</div>
+                display = products && products.map(function(product) {
+                    // return <div key={product.name}>{product.name}</div>;
+                    return <Product key={product.name} product={product} />;
+                });
+            }
 
-            <form onSubmit={handleOnSubmit}>
-                <select name="category_id" onChange={handleOnChange}>
-                    <option value="">All</option>
-                    {categories && categories.map(function(category){
-                        return(<option key={category.id} value={category.id}>{category.name}</option>);
-                    })}
-                </select>
+            result =  <div className="center-container shadow">
+            <div className="home-nav">
+                <div>Shopper</div>
 
-                <label htmlFor="search">
-                    <input type="text" id="search" name="query" value={params.query} onChange={handleOnChange}/>
-                </label>
+                <form onSubmit={handleOnSubmit}>
+                    <select name="category_id" onChange={handleOnChange}>
+                        <option value="">All</option>
+                        {categories && categories.map(function(category){
+                            return(<option key={category.id} value={category.id}>{category.name}</option>);
+                        })}
+                    </select>
 
-                <button type="submit" onClick={searchProducts}>
-                    <i className="fa-solid fa-magnifying-glass"></i>
-                </button>
-            </form>
+                    <label htmlFor="search">
+                        <input type="text" id="search" name="query" value={params.query} onChange={handleOnChange}/>
+                    </label>
 
-            <ul>
-                <li>Sign In</li>
-                <li>Create Account</li>
-            </ul>
+                    <button type="submit" onClick={searchProducts}>
+                        <i className="fa-solid fa-magnifying-glass"></i>
+                    </button>
+                </form>
 
-            <div><i className="fa-solid fa-cart-shopping"></i></div>
+                <ul>
+                    <li>Sign In</li>
+                    <li>Create Account</li>
+                </ul>
+
+                <div><i className="fa-solid fa-cart-shopping"></i></div>
+            </div>
+            {display}
+            {/* <Pagination totalPages={pagination.total_pages} changePage={(number) => {setParams({...params, page: number})}} /> */}
+            <Pagination totalPages={pagination.total_pages} changePage={handleOnChange} />
         </div>
-        {display}
-    </div>
+        }
 
         return(result);
     //}
 }
 
-const Product = (props) => {
+const Pagination = ({totalPages, changePage}) => {
 
-const {product: {image, name, description}} = props;
+    const pages = [];
+    for(let i = 0; i < totalPages; i++) {
+        pages.push(String(i + 1));
+    }
+    
+    //const {value, handleOnChange} = props;
+
+    // const result = <button 
+    //     type="button"
+    //     //key={`page_${i}`}
+    //     name="page"
+    //     value={value}
+    //     onClick={handleOnChange}
+    // >
+    //     <div>{value}</div>
+    // </button>
+
+    const result = pages.length && pages.map((page) => {
+        return (
+            // <button 
+            //     type="button"
+            //     key={`page_${page}`}
+            //     // name="page"
+            //     // value={page}
+            //     onClick={() => {changePage(page)}}
+            //     //onClick={changePage}
+            // >
+            //     <div>{page}</div>
+            // </button>
+
+             <input 
+                type="button"
+                key={`page_${page}`}
+                name="page"
+                value={page}
+                onClick={changePage}
+            />
+
+            // <a
+            //     type="button"
+            //     key={`page_${page}`}
+            //     name="page"
+            //     value={page}
+            //     href="!#"
+            //     // onClick={() => {changePage(page)}}
+            //     onClick={changePage}
+            // >
+            //     {page}
+            // </a> 
+        
+               
+        );
+    })
+
+    return(result);
+}
+
+// const Products = ({products}) => {
+  
+// }
+
+const Product = ({product: {image, name, description}}) => {
+
+//onst {product: {image, name, description}} = props;
 
  const result = <>
     <div>
