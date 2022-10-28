@@ -4,21 +4,6 @@ import "./PageHome.css";
 
 const PageHome = () => {
 
-    // state = {
-    //     loading: true,
-    //     error: false,
-    //     products: [],
-    //     categories: [],
-    //     params: {
-    //         query: "",
-    //         category_id: "",
-    //     }
-    // }
-
-    // CONST_INIT_PARAMS = {
-
-    // }
-
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(false);
     const [products, setProducts] = useState([]);
@@ -28,7 +13,6 @@ const PageHome = () => {
 
     const searchProducts = useCallback(async () => {
         
-        //const params = this.state.params;
         const paramsCopy = {};
 
         for(const key of Object.keys(params)) {
@@ -47,18 +31,12 @@ const PageHome = () => {
                 const products = result.data.products;
                 const pagination = result.data.pagination;
 
-                // this.setState({
-                //     products: data,
-                // });
                 setProducts(products);
                 setPagination(pagination);
             }
         }
         catch {
            
-            // this.setState({
-            //     products: [],
-            // });
             setProducts([]);
             setPagination({});
         }
@@ -81,30 +59,16 @@ const PageHome = () => {
                     const pagination = resProd.data.pagination;
                     const catData = resCat.data;
     
-                    
-                    // this.setState({
-                    //     products: prodData,
-                    //     categories: catData,
-                    //     loading: false
-                    // });
                     setProducts(prodData);
                     setPagination(pagination);
                     setCategories(catData);
                     setLoading(false);
                 }
                 else {
-                    // this.setState({
-                    //     loading: false
-                    // });
                     setLoading(false);
                 }
             }
             catch(error) {
-                //console.error(error);
-                // this.setState({
-                //     loading: false,
-                //     error: true,
-                // });
                 setLoading(false);
                 setError(true);
             }
@@ -132,23 +96,11 @@ const PageHome = () => {
 
     const handleOnChange = ({target: {name, value}}) => {
 
-        // this.setState(function(prevState){
-                
-        //     return({
-        //         //...prevState,
-        //         params: {
-        //             ...prevState.params,
-        //             [name]: value,
-        //         }
-        //     });
-        // });  
-        
         setParams({...params, [name] : value, page: ""});
     }
 
     const setPage = (number) => {
         setParams({...params, page : String(number)}); 
-        // handleOnChange({target: {name: "page", value: number}});
     };
     //render() {
 
@@ -193,10 +145,16 @@ const PageHome = () => {
                     </button>
                 </form>
 
-                <ul>
-                    <li>Sign In</li>
-                    <li>Create Account</li>
-                </ul>
+                <div className="dropdown-container">
+                    <div>
+                        <div>Sign In</div>
+                        <i className="fa-solid fa-caret-down"></i>
+                    </div>
+                    <ul className="dropdown-menu">
+                        <li>Sign In</li>
+                        <li>Create Account</li>
+                    </ul>
+                </div>
 
                 <div><i className="fa-solid fa-cart-shopping"></i></div>
             </div>

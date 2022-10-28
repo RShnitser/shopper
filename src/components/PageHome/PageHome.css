@@ -25,3 +25,17 @@
 .page-button-selected {
     background-color: blue;
 }
+
+.dropdown-container:hover .dropdown-menu {
+    /* display: block; */
+    transform: scaleY(1);
+}
+
+.dropdown-menu {
+    transform-origin: top;
+    /* display: none; */
+    transform: scaleY(0);
+    position: absolute;
+    transition: transform 0.2s;
+}
+
