@@ -6,3 +6,22 @@
     padding: 20px;
     margin: 20px;
 }
+
+.product-grid {
+    max-width: 750px;
+    margin: 0 auto;
+    /* display: flex;
+    flex-wrap: wrap; */
+    display: grid;
+    gap: 10px;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    /* grid-template-columns: repeat(4, 1fr); */
+}
+
+.product-image {
+    max-width: 100px;
+}
+
+.page-button-selected {
+    background-color: blue;
+}
