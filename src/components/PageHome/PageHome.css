@@ -26,16 +26,21 @@
     background-color: blue;
 }
 
-.dropdown-container:hover .dropdown-menu {
-    /* display: block; */
+/* .dropdown-container:hover .dropdown-menu {
     transform: scaleY(1);
-}
+} */
 
 .dropdown-menu {
     transform-origin: top;
-    /* display: none; */
-    transform: scaleY(0);
     position: absolute;
     transition: transform 0.2s;
+}
+
+.open {
+    transform: scaleY(1);
+}
+
+.closed {
+    transform: scaleY(0);
 }
 

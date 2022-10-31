@@ -145,7 +145,7 @@ const PageHome = () => {
                     </button>
                 </form>
 
-                <div className="dropdown-container">
+                {/* <div className="dropdown-container">
                     <div>
                         <div>Sign In</div>
                         <i className="fa-solid fa-caret-down"></i>
@@ -154,7 +154,13 @@ const PageHome = () => {
                         <li>Sign In</li>
                         <li>Create Account</li>
                     </ul>
-                </div>
+                </div> */}
+                <DropDown title={"Sign In"}>
+                    {/* <li>Sign In</li>
+                    <li>Create Account</li> */}
+                    <DropDownItem  label={"Sign In"}/>
+                    <DropDownItem label={"Create Account"}/>
+                </DropDown>
 
                 <div><i className="fa-solid fa-cart-shopping"></i></div>
             </div>
@@ -169,6 +175,78 @@ const PageHome = () => {
 
         return(result);
     //}
+}
+
+const DropDown = ({title, children}) => {
+
+    const DROPDOWN_STATE = {
+        DROPDOWN_OPEN: "o",
+        DROPDOWN_CLOSED: "c",
+    };
+
+    const [open, setOpen] = useState(DROPDOWN_STATE.DROPDOWN_OPEN);
+
+    const handleOnClick = () => {
+
+        
+
+            const openState = open === DROPDOWN_STATE.DROPDOWN_OPEN ? 
+                DROPDOWN_STATE.DROPDOWN_CLOSED : 
+                DROPDOWN_STATE.DROPDOWN_OPEN;
+    
+            //console.log("click");
+            setOpen(openState);
+        
+
+    }
+
+    // const handleMouseEnter = () => {
+
+    //     if(window.innerWidth > 800) {
+    //         setOpen(DROPDOWN_STATE.DROPDOWN_OPEN)
+    //     }
+    // }
+
+    let menu = "open";
+    let caret = "down";
+
+    if(open === DROPDOWN_STATE.DROPDOWN_CLOSED) {
+        menu = "closed"
+        caret = "up";
+    }
+
+
+
+    const result = <div
+        // style={{backgroundColor: "blue"}}
+        onClick={handleOnClick}
+        // onMouseEnter={handleMouseEnter}
+        // onMouseLeave={() => {setOpen(DROPDOWN_STATE.DROPDOWN_CLOSED)}}
+        >
+        <div>
+            <div>{title}</div>
+            <i className={`fa-solid fa-caret-${caret}`}></i>
+        </div>
+        <ul 
+            className={`dropdown-menu ${menu}`}
+            // onMouseLeave={() => {setOpen(DROPDOWN_STATE.DROPDOWN_CLOSED)}}
+        >
+            {children}
+        </ul>
+    </div>
+
+    return(result);
+}
+
+const DropDownItem = ({label, onClick}) => {
+
+    const result = <li>
+        <button type="button" onClick={onClick}>
+            {label}
+        </button>
+    </li>
+
+    return result;
 }
 
 const Pagination = ({totalPages, currentPage, changePage}) => {
