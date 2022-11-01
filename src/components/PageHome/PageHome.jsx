@@ -10,6 +10,13 @@ const PageHome = () => {
     const [pagination, setPagination] = useState({});
     const [categories, setCategories] = useState([]);
     const [params, setParams] = useState({query: "", category_id: "", page: ""});
+    const [selectedProduct, selectProduct] = useState(null);
+
+    const setProductData = (products, pagination) => {
+        setProducts(products);
+        setPagination(pagination);
+        selectProduct(null);
+    }
 
     const searchProducts = useCallback(async () => {
         
@@ -31,14 +38,12 @@ const PageHome = () => {
                 const products = result.data.products;
                 const pagination = result.data.pagination;
 
-                setProducts(products);
-                setPagination(pagination);
+                setProductData(products, pagination);
             }
         }
         catch {
            
-            setProducts([]);
-            setPagination({});
+            setProductData(products, pagination);
         }
     }, [params]);
 
@@ -102,6 +107,11 @@ const PageHome = () => {
     const setPage = (number) => {
         setParams({...params, page : String(number)}); 
     };
+
+    // const onClickProduct = (product) => {
+
+    //     selectProduct(product);
+    // }
     //render() {
 
         //const{ loading, products, categories, params} = this.state;
@@ -116,13 +126,19 @@ const PageHome = () => {
             if(products && products.length === 0) {
                 display = <div>No results to display</div>
             }
+            else if(selectedProduct) {
+                // display = null;
+                display = <ProductLarge product={selectedProduct} />;
+            }
             else {
 
                 display = products && products.map(function(product) {
                     // return <div key={product.name}>{product.name}</div>;
-                    return <Product key={product.name} product={product} />;
+                    return <Product key={product.name} product={product} onClick={() => {selectProduct(product)}}/>;
                 });
             }
+
+            const pages = selectedProduct ? null : <Pagination totalPages={pagination.total_pages} currentPage={pagination.current_page} changePage={setPage} />;
 
             result =  <div className="shadow">
             <div className="home-nav">
@@ -167,7 +183,8 @@ const PageHome = () => {
             <div className="product-grid">
                 {display}
             </div>
-            <Pagination totalPages={pagination.total_pages} currentPage={pagination.current_page} changePage={setPage} />
+            {pages}
+            {/* <Pagination totalPages={pagination.total_pages} currentPage={pagination.current_page} changePage={setPage} /> */}
 
             {/* <Pagination totalPages={pagination.total_pages} currentPage={pagination.current_page} changePage={handleOnChange} /> */}
         </div>
@@ -184,7 +201,7 @@ const DropDown = ({title, children}) => {
         DROPDOWN_CLOSED: "c",
     };
 
-    const [open, setOpen] = useState(DROPDOWN_STATE.DROPDOWN_OPEN);
+    const [open, setOpen] = useState(DROPDOWN_STATE.DROPDOWN_CLOSED);
 
     const handleOnClick = () => {
 
@@ -443,11 +460,47 @@ const PageButton = ({label, page, changePage, ...props}) => {
   
 // }
 
-const Product = ({product: {image, name, description}}) => {
+const ProductLarge = ({product: {image, name, description}}) => {
+
+    const [quantity, setQuantity] = useState(0);
+
+    const handleOnChange = ({target: {value}}) => {
+
+        setQuantity(value);
+    }
+    
+    const quantities = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12,
+    13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25];
+    
+    const result = <div>
+         <div className="product-image">
+            <img src={image} alt="product" />
+        </div>
+        <div>{name}</div>
+        <div>{description}</div>
+        <div>{"Quantity: "}</div>
+        <select name="quantity" value={quantity} onChange={handleOnChange}>
+            {quantities && quantities.map((number) => {
+                const select = <option key ={`quantity_${number}`} value={number}>
+                    {number}
+                </option>
+
+                return(select);
+            })}
+        </select>
+        <button type="button">
+            <div>Add to Cart</div>
+        </button>
+    </div>
+
+    return(result);
+}
+
+const Product = ({product: {image, name}, onClick}) => {
 
 //onst {product: {image, name, description}} = props;
 
- const result = <div>
+ const result = <div onClick={onClick}>
     <div className="product-image">
         <img src={image} alt="product" />
     </div>
@@ -455,7 +508,7 @@ const Product = ({product: {image, name, description}}) => {
     {/* <div>{description}</div> */}
  </div>
 
- return result;
+ return(result);
 }
 
 export default PageHome;
