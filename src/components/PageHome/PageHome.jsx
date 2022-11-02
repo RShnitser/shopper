@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { fetchCategories, fetchProducts } from "../../scripts/services";
+import { addToCart, createCart, fetchCategories, fetchProducts } from "../../scripts/services";
 import "./PageHome.css";
 
 const PageHome = () => {
 
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(false);
+    const [cart, setCart] = useState({});
     const [products, setProducts] = useState([]);
     const [pagination, setPagination] = useState({});
     const [categories, setCategories] = useState([]);
@@ -54,16 +55,23 @@ const PageHome = () => {
             try {
                 const products = fetchProducts();
                 const categories = fetchCategories();
+                const cart = createCart();
     
-                const [resProd, resCat] = await Promise.all([products, categories]);
-        
-              
-                if(resProd && resProd.response.ok && resCat && resCat.response.ok) {
+                const [resProd, resCat, resCart] = await Promise.all([products, categories, cart]);
+             
+
+
+             
+                if(resProd && resProd.response.ok && resCat && resCat.response.ok && resCart && resCart.response.ok) {
         
                     const prodData = resProd.data.products;
                     const pagination = resProd.data.pagination;
                     const catData = resCat.data;
-    
+                    const cartData = resCart.data;
+
+                    //console.log(cartData);
+                    
+                    setCart(cartData);
                     setProducts(prodData);
                     setPagination(pagination);
                     setCategories(catData);
@@ -123,12 +131,17 @@ const PageHome = () => {
         }
         else {
             let display = null;
+            let itemCount = null;
+
+            //if(cart.total_items) {
+                itemCount = <div>{cart.total_items}</div>
+            //}
             if(products && products.length === 0) {
                 display = <div>No results to display</div>
             }
             else if(selectedProduct) {
                 // display = null;
-                display = <ProductLarge product={selectedProduct} />;
+                display = <ProductLarge cartId={cart.id} product={selectedProduct} setCart={setCart}/>;
             }
             else {
 
@@ -179,6 +192,7 @@ const PageHome = () => {
                 </DropDown>
 
                 <div><i className="fa-solid fa-cart-shopping"></i></div>
+                {itemCount}
             </div>
             <div className="product-grid">
                 {display}
@@ -460,13 +474,27 @@ const PageButton = ({label, page, changePage, ...props}) => {
   
 // }
 
-const ProductLarge = ({product: {image, name, description}}) => {
+const ProductLarge = ({cartId, product: {id, image, name, description}, setCart}) => {
 
-    const [quantity, setQuantity] = useState(0);
+    const [quantity, setQuantity] = useState(1);
 
     const handleOnChange = ({target: {value}}) => {
 
         setQuantity(value);
+    }
+
+    const handleAddToCart = async () => {
+        try {
+            const result = await addToCart(cartId, id, quantity);
+            
+            if(result && result.response.ok) {
+
+                setCart(result.data);
+            }
+        }
+        catch{
+
+        }
     }
     
     const quantities = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12,
@@ -488,7 +516,7 @@ const ProductLarge = ({product: {image, name, description}}) => {
                 return(select);
             })}
         </select>
-        <button type="button">
+        <button type="button" onClick={handleAddToCart}>
             <div>Add to Cart</div>
         </button>
     </div>
