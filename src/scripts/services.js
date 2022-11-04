@@ -16,7 +16,7 @@ export async function fetchProducts(params={}) {
                 url.searchParams.append(key, params[key]);
             }
 
-            url.searchParams.append("limit", 1);
+            url.searchParams.append("limit", 10);
 
             const headers = {
                 "X-Authorization": COMMERCE_API,

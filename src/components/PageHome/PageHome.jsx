@@ -134,7 +134,7 @@ const PageHome = () => {
             let itemCount = null;
 
             //if(cart.total_items) {
-                itemCount = <div>{cart.total_items}</div>
+                itemCount = <div className="cart-count">{cart.total_items}</div>
             //}
             if(products && products.length === 0) {
                 display = <div>No results to display</div>
@@ -153,23 +153,23 @@ const PageHome = () => {
 
             const pages = selectedProduct ? null : <Pagination totalPages={pagination.total_pages} currentPage={pagination.current_page} changePage={setPage} />;
 
-            result =  <div className="shadow">
-            <div className="home-nav">
-                <div>Shopper</div>
+            result =  <div >
+            <div className="nav-container display-flex">
+                <div className="nav-title">Shopper</div>
 
-                <form onSubmit={handleOnSubmit}>
-                    <select name="category_id" onChange={handleOnChange}>
+                <form className="search-form display-flex" onSubmit={handleOnSubmit}>
+                    <select className="search-input" name="category_id" onChange={handleOnChange}>
                         <option value="">All</option>
                         {categories && categories.map(function(category){
                             return(<option key={category.id} value={category.id}>{category.name}</option>);
                         })}
                     </select>
 
-                    <label htmlFor="search">
-                        <input type="text" id="search" name="query" value={params.query} onChange={handleOnChange}/>
+                    <label className="search-bar-container" htmlFor="search">
+                        <input className="search-bar" type="text" id="search" name="query" value={params.query} onChange={handleOnChange}/>
                     </label>
 
-                    <button type="submit" onClick={searchProducts}>
+                    <button className="search-input search-button" type="submit" onClick={searchProducts}>
                         <i className="fa-solid fa-magnifying-glass"></i>
                     </button>
                 </form>
@@ -191,8 +191,10 @@ const PageHome = () => {
                     <DropDownItem label={"Create Account"}/>
                 </DropDown>
 
-                <div><i className="fa-solid fa-cart-shopping"></i></div>
-                {itemCount}
+                <div className="cart-icon">
+                    <i className="fa-solid fa-cart-shopping"></i>
+                    {itemCount}
+                </div>
             </div>
             <div className="product-grid">
                 {display}
@@ -254,8 +256,8 @@ const DropDown = ({title, children}) => {
         // onMouseEnter={handleMouseEnter}
         // onMouseLeave={() => {setOpen(DROPDOWN_STATE.DROPDOWN_CLOSED)}}
         >
-        <div>
-            <div>{title}</div>
+        <div className="dropdown-title">
+            <div >{title}</div>
             <i className={`fa-solid fa-caret-${caret}`}></i>
         </div>
         <ul 
@@ -272,7 +274,7 @@ const DropDown = ({title, children}) => {
 const DropDownItem = ({label, onClick}) => {
 
     const result = <li>
-        <button type="button" onClick={onClick}>
+        <button className="dropdown-item" type="button" onClick={onClick}>
             {label}
         </button>
     </li>
@@ -373,7 +375,7 @@ const Pagination = ({totalPages, currentPage, changePage}) => {
         if(page > 0) {
             button =  <li key={`page_${page}`}>
                     <PageButton 
-                        className={page === currentPage ? "page-button-selected" : ""}
+                        className={page === currentPage ? "page-button page-button-selected" : "page-button"}
                         label={page}
                         page={page} 
                         changePage={changePage}
@@ -418,11 +420,13 @@ const Pagination = ({totalPages, currentPage, changePage}) => {
             //     {page}
             // </a>
             
-    const result = <nav>
-        <ul>
+    const result = <nav >
+        <ul  className="page-container display-flex">
             <li>
                 <PageButton
-                    label={"<"}
+                    // label={"<"}
+                    className="page-button"
+                    label={<i className="fa-solid fa-chevron-left"></i>}
                     page={currentPage - 1} 
                     changePage={changePage}
                     disabled={currentPage === 1}
@@ -431,7 +435,8 @@ const Pagination = ({totalPages, currentPage, changePage}) => {
             {pageButtons}
             <li>
                 <PageButton 
-                    label={">"}
+                    className="page-button"
+                    label={<i className="fa-solid fa-chevron-right"></i>}
                     page={currentPage + 1} 
                     changePage={changePage}
                     disabled={currentPage === totalPages}
@@ -474,7 +479,7 @@ const PageButton = ({label, page, changePage, ...props}) => {
   
 // }
 
-const ProductLarge = ({cartId, product: {id, image, name, description}, setCart}) => {
+const ProductLarge = ({cartId, product: {id, image, name, price, description}, setCart}) => {
 
     const [quantity, setQuantity] = useState(1);
 
@@ -500,39 +505,47 @@ const ProductLarge = ({cartId, product: {id, image, name, description}, setCart}
     const quantities = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12,
     13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25];
     
-    const result = <div>
-         <div className="product-image">
+    const result = <div className="product-item display-flex">
+         <div className="product-image-large">
             <img src={image} alt="product" />
         </div>
-        <div>{name}</div>
-        <div>{description}</div>
-        <div>{"Quantity: "}</div>
-        <select name="quantity" value={quantity} onChange={handleOnChange}>
-            {quantities && quantities.map((number) => {
-                const select = <option key ={`quantity_${number}`} value={number}>
-                    {number}
-                </option>
+        <div>
+            <div className="product-name">{name}</div>
+            <div className="product-price">{price}</div>
+            <div>{description}</div>
+            <div className="display-flex">
+                <div className="product-name">{"Quantity: "}</div>
+                <select className="product-button" name="quantity" value={quantity} onChange={handleOnChange}>
+                    {quantities && quantities.map((number) => {
+                        const select = <option key ={`quantity_${number}`} value={number}>
+                            {number}
+                        </option>
 
-                return(select);
-            })}
-        </select>
-        <button type="button" onClick={handleAddToCart}>
-            <div>Add to Cart</div>
-        </button>
+                        return(select);
+                    })}
+                </select>
+            </div>
+            <button className="product-button" type="button" onClick={handleAddToCart}>
+                <div>Add to Cart</div>
+            </button>
+        </div>
     </div>
 
     return(result);
 }
 
-const Product = ({product: {image, name}, onClick}) => {
+const Product = ({product: {image, name, price}, onClick}) => {
 
 //onst {product: {image, name, description}} = props;
 
- const result = <div onClick={onClick}>
+ const result = <div className="product-item display-flex product-hover" onClick={onClick}>
     <div className="product-image">
         <img src={image} alt="product" />
     </div>
-    <div>{name}</div>
+    <div>
+        <div className="product-name">{name}</div>
+        <div className="product-price">{price}</div>
+    </div>
     {/* <div>{description}</div> */}
  </div>
 
