@@ -1,5 +1,9 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { addToCart, createCart, fetchCategories, fetchProducts } from "../../scripts/services";
+import { createCart, fetchCategories, fetchProducts } from "../../scripts/services";
+import Pagination from "./Pagination";
+import DropDown, {DropDownItem} from "./DropDown";
+import Product, {ProductLarge} from "./Product";
+import SearchBar from "./SearchBar";
 import "./PageHome.css";
 
 const PageHome = () => {
@@ -59,17 +63,12 @@ const PageHome = () => {
     
                 const [resProd, resCat, resCart] = await Promise.all([products, categories, cart]);
              
-
-
-             
                 if(resProd && resProd.response.ok && resCat && resCat.response.ok && resCart && resCart.response.ok) {
         
                     const prodData = resProd.data.products;
                     const pagination = resProd.data.pagination;
                     const catData = resCat.data;
                     const cartData = resCart.data;
-
-                    //console.log(cartData);
                     
                     setCart(cartData);
                     setProducts(prodData);
@@ -116,440 +115,63 @@ const PageHome = () => {
         setParams({...params, page : String(number)}); 
     };
 
-    // const onClickProduct = (product) => {
 
-    //     selectProduct(product);
-    // }
-    //render() {
-
-        //const{ loading, products, categories, params} = this.state;
-
-        let result = null;
-        
-        if(loading) {
-            result = <div>Loading...</div>;
-        }
-        else {
-            let display = null;
-            let itemCount = null;
-
-            //if(cart.total_items) {
-                itemCount = <div className="cart-count">{cart.total_items}</div>
-            //}
-            if(products && products.length === 0) {
-                display = <div>No results to display</div>
-            }
-            else if(selectedProduct) {
-                // display = null;
-                display = <ProductLarge cartId={cart.id} product={selectedProduct} setCart={setCart}/>;
-            }
-            else {
-
-                display = products && products.map(function(product) {
-                    // return <div key={product.name}>{product.name}</div>;
-                    return <Product key={product.name} product={product} onClick={() => {selectProduct(product)}}/>;
-                });
-            }
-
-            const pages = selectedProduct ? null : <Pagination totalPages={pagination.total_pages} currentPage={pagination.current_page} changePage={setPage} />;
-
-            result =  <div >
-            <div className="nav-container display-flex">
-                <div className="nav-title">Shopper</div>
-
-                <form className="search-form display-flex" onSubmit={handleOnSubmit}>
-                    <select className="search-input" name="category_id" onChange={handleOnChange}>
-                        <option value="">All</option>
-                        {categories && categories.map(function(category){
-                            return(<option key={category.id} value={category.id}>{category.name}</option>);
-                        })}
-                    </select>
-
-                    <label className="search-bar-container" htmlFor="search">
-                        <input className="search-bar" type="text" id="search" name="query" value={params.query} onChange={handleOnChange}/>
-                    </label>
-
-                    <button className="search-input search-button" type="submit" onClick={searchProducts}>
-                        <i className="fa-solid fa-magnifying-glass"></i>
-                    </button>
-                </form>
-
-                {/* <div className="dropdown-container">
-                    <div>
-                        <div>Sign In</div>
-                        <i className="fa-solid fa-caret-down"></i>
-                    </div>
-                    <ul className="dropdown-menu">
-                        <li>Sign In</li>
-                        <li>Create Account</li>
-                    </ul>
-                </div> */}
-                <DropDown title={"Sign In"}>
-                    {/* <li>Sign In</li>
-                    <li>Create Account</li> */}
-                    <DropDownItem  label={"Sign In"}/>
-                    <DropDownItem label={"Create Account"}/>
-                </DropDown>
-
-                <div className="cart-icon">
-                    <i className="fa-solid fa-cart-shopping"></i>
-                    {itemCount}
-                </div>
-            </div>
-            <div className="product-grid">
-                {display}
-            </div>
-            {pages}
-            {/* <Pagination totalPages={pagination.total_pages} currentPage={pagination.current_page} changePage={setPage} /> */}
-
-            {/* <Pagination totalPages={pagination.total_pages} currentPage={pagination.current_page} changePage={handleOnChange} /> */}
-        </div>
-        }
-
-        return(result);
-    //}
-}
-
-const DropDown = ({title, children}) => {
-
-    const DROPDOWN_STATE = {
-        DROPDOWN_OPEN: "o",
-        DROPDOWN_CLOSED: "c",
-    };
-
-    const [open, setOpen] = useState(DROPDOWN_STATE.DROPDOWN_CLOSED);
-
-    const handleOnClick = () => {
-
-        
-
-            const openState = open === DROPDOWN_STATE.DROPDOWN_OPEN ? 
-                DROPDOWN_STATE.DROPDOWN_CLOSED : 
-                DROPDOWN_STATE.DROPDOWN_OPEN;
+    let result = null;
     
-            //console.log("click");
-            setOpen(openState);
-        
-
-    }
-
-    // const handleMouseEnter = () => {
-
-    //     if(window.innerWidth > 800) {
-    //         setOpen(DROPDOWN_STATE.DROPDOWN_OPEN)
-    //     }
-    // }
-
-    let menu = "open";
-    let caret = "down";
-
-    if(open === DROPDOWN_STATE.DROPDOWN_CLOSED) {
-        menu = "closed"
-        caret = "up";
-    }
-
-
-
-    const result = <div
-        // style={{backgroundColor: "blue"}}
-        onClick={handleOnClick}
-        // onMouseEnter={handleMouseEnter}
-        // onMouseLeave={() => {setOpen(DROPDOWN_STATE.DROPDOWN_CLOSED)}}
-        >
-        <div className="dropdown-title">
-            <div >{title}</div>
-            <i className={`fa-solid fa-caret-${caret}`}></i>
-        </div>
-        <ul 
-            className={`dropdown-menu ${menu}`}
-            // onMouseLeave={() => {setOpen(DROPDOWN_STATE.DROPDOWN_CLOSED)}}
-        >
-            {children}
-        </ul>
-    </div>
-
-    return(result);
-}
-
-const DropDownItem = ({label, onClick}) => {
-
-    const result = <li>
-        <button className="dropdown-item" type="button" onClick={onClick}>
-            {label}
-        </button>
-    </li>
-
-    return result;
-}
-
-const Pagination = ({totalPages, currentPage, changePage}) => {
-
-    const Range = (start, end) => {
-        
-        const result = [];
-
-        for(let i = start; i <= end; i++) {
-            result.push(i);
-        }
-        
-        return result;
-    }
-
-    let pages = [];
-    const siblingCount = 1;
-    const pagesShown = 2 * siblingCount + 5;
-
-    const DOTS = {
-        DOTS_NONE: 0,
-        DOTS_LEFT: 1,
-        DOTS_RIGHT: 2,
-        DOTS_BOTH: 3,
-    }
-
-    let dotType = DOTS.DOTS_NONE;
-
-  
-
-    //const firstPage = 1;
-    //const lastPage = totalPages;
-
-    const leftSibling = Math.max(currentPage - siblingCount, 1);
-    const rightSibling = Math.min(currentPage + siblingCount, totalPages);
-
-    const isLeftDot = leftSibling > 3;
-    const isRightDot = rightSibling < totalPages - 2;
-
-    if(pagesShown >= totalPages) {
-        dotType = DOTS.DOTS_NONE;  
-    }
-    else if(!isLeftDot && isRightDot) {
-        dotType = DOTS.DOTS_RIGHT;
-    }
-    else if(isLeftDot && !isRightDot) {
-        dotType = DOTS.DOTS_LEFT;
+    if(loading) {
+        result = <div>Loading...</div>;
     }
     else {
-        dotType = DOTS.DOTS_BOTH;
-    }
+        let display = null;
+        let itemCount = null;
+        let pages = null;
 
-    switch(dotType) {
-        case DOTS.DOTS_NONE:
-            pages = Range(1, totalPages);
-        break;
-        case DOTS.DOTS_RIGHT:
-            let leftItemCount = 3 + 2 * siblingCount;
-            pages = [...Range(1, leftItemCount), -1, totalPages]
-        break;
-        case DOTS.DOTS_LEFT:
-            let rightItemCount = 3 + 2 * siblingCount;
-            pages = [1, -2, ...Range(totalPages - rightItemCount + 1, totalPages)]
-        break;
-        case DOTS.DOTS_BOTH:
-            pages = [1, -2, ...Range(leftSibling, rightSibling), -1, totalPages];
-        break;
-        default:
-        break;
-    }
-
-   
-
-    // for(let i = 0; i < totalPages; i++) {
-    //     pages.push(String(i + 1));
-    // }
-    
-    //const {value, handleOnChange} = props;
-
-    // const result = <button 
-    //     type="button"
-    //     //key={`page_${i}`}
-    //     name="page"
-    //     value={value}
-    //     onClick={handleOnChange}
-    // >
-    //     <div>{value}</div>
-    // </button>
-
-    const pageButtons = pages.length && pages.map((page) => {
-        
-        let button = null;
-        if(page > 0) {
-            button =  <li key={`page_${page}`}>
-                    <PageButton 
-                        className={page === currentPage ? "page-button page-button-selected" : "page-button"}
-                        label={page}
-                        page={page} 
-                        changePage={changePage}
-                    />
-            </li>
+        if(cart.total_items) {
+            itemCount = <div className="cart-count">{cart.total_items}</div>
+        }
+        if(products && products.length === 0) {
+            display = <div>No results to display</div>
+        }
+        else if(selectedProduct) {
+            display = <ProductLarge cartId={cart.id} product={selectedProduct} setCart={setCart}/>;
         }
         else {
-            button = 
-            <li key={`page_D${-page}`}>
-                &#8230;
-                {/* <div key={`page_D${-page}`}>{". . ."}</div> */}
-            </li>
+
+            display = products && products.map(function(product) {
+                return <Product key={product.name} product={product} onClick={() => {selectProduct(product)}}/>;
+            });
+
+            pages = <Pagination totalPages={pagination.total_pages} currentPage={pagination.current_page} changePage={setPage} />;
         }
 
-            return (button
-                // <button 
-                //     type="button"
-                //     key={`page_${page}`}
-                //     // name="page"
-                //     // value={page}
-                //     onClick={() => {changePage(page)}}
-                //     //onClick={changePage}
-                // >
-                //     <div>{page}</div>
-                // </button>
-              
-    
-                  
-            );
-    
-    });
+        //const pages = selectedProduct ? null : <Pagination totalPages={pagination.total_pages} currentPage={pagination.current_page} changePage={setPage} />;
 
-            // <a
-            //     type="button"
-            //     key={`page_${page}`}
-            //     name="page"
-            //     value={page}
-            //     href="!#"
-            //     // onClick={() => {changePage(page)}}
-            //     onClick={changePage}
-            // >
-            //     {page}
-            // </a>
-            
-    const result = <nav >
-        <ul  className="page-container display-flex">
-            <li>
-                <PageButton
-                    // label={"<"}
-                    className="page-button"
-                    label={<i className="fa-solid fa-chevron-left"></i>}
-                    page={currentPage - 1} 
-                    changePage={changePage}
-                    disabled={currentPage === 1}
-                />
-            </li>
-            {pageButtons}
-            <li>
-                <PageButton 
-                    className="page-button"
-                    label={<i className="fa-solid fa-chevron-right"></i>}
-                    page={currentPage + 1} 
-                    changePage={changePage}
-                    disabled={currentPage === totalPages}
-                />
-            </li>
-        </ul>
-    </nav>
-        
-    return(result);
-}
+        result =  <div >
+        <div className="nav-container display-flex">
+            <div className="nav-title">Shopper</div>
 
-const PageButton = ({label, page, changePage, ...props}) => {
+            <SearchBar categories={categories} query={params.query} handleOnChange={handleOnChange} handleOnSubmit={handleOnSubmit}/>
 
-    const result = <button
-        type="button"
-        // key={`page_${page}`}
-        // name="page"
-        // value={page}
-        // onClick={changePage}
-        // href="!#"
-        onClick={() => {changePage(page)}}
-        {...props}
-    >
-        {label}
-    </button>
+            <DropDown title={"Sign In"}>
+                <DropDownItem  label={"Sign In"}/>
+                <DropDownItem label={"Create Account"}/>
+            </DropDown>
 
-    // const result = <input
-    //     type="button"
-    //     name="page"
-    //     value={page}
-    //     onClick={changePage}
-    //     {...props}
-    // />
-
-    return(result);
-}
-
-
-// const Products = ({products}) => {
-  
-// }
-
-const ProductLarge = ({cartId, product: {id, image, name, price, description}, setCart}) => {
-
-    const [quantity, setQuantity] = useState(1);
-
-    const handleOnChange = ({target: {value}}) => {
-
-        setQuantity(value);
-    }
-
-    const handleAddToCart = async () => {
-        try {
-            const result = await addToCart(cartId, id, quantity);
-            
-            if(result && result.response.ok) {
-
-                setCart(result.data);
-            }
-        }
-        catch{
-
-        }
-    }
-    
-    const quantities = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12,
-    13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25];
-    
-    const result = <div className="product-item display-flex">
-         <div className="product-image-large">
-            <img src={image} alt="product" />
-        </div>
-        <div>
-            <div className="product-name">{name}</div>
-            <div className="product-price">{price}</div>
-            <div>{description}</div>
-            <div className="display-flex">
-                <div className="product-name">{"Quantity: "}</div>
-                <select className="product-button" name="quantity" value={quantity} onChange={handleOnChange}>
-                    {quantities && quantities.map((number) => {
-                        const select = <option key ={`quantity_${number}`} value={number}>
-                            {number}
-                        </option>
-
-                        return(select);
-                    })}
-                </select>
+            <div className="cart-icon">
+                <i className="fa-solid fa-cart-shopping"></i>
+                {itemCount}
             </div>
-            <button className="product-button" type="button" onClick={handleAddToCart}>
-                <div>Add to Cart</div>
-            </button>
         </div>
+        <div className="product-grid">
+            {display}
+        </div>
+        {pages}
     </div>
+    }
 
     return(result);
 }
 
-const Product = ({product: {image, name, price}, onClick}) => {
 
-//onst {product: {image, name, description}} = props;
-
- const result = <div className="product-item display-flex product-hover" onClick={onClick}>
-    <div className="product-image">
-        <img src={image} alt="product" />
-    </div>
-    <div>
-        <div className="product-name">{name}</div>
-        <div className="product-price">{price}</div>
-    </div>
-    {/* <div>{description}</div> */}
- </div>
-
- return(result);
-}
 
 export default PageHome;
