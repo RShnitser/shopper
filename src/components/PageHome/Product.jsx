@@ -27,16 +27,16 @@ export const ProductLarge = ({cartId, product: {id, image, name, price, descript
     const quantities = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12,
     13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25];
     
-    const result = <div className="product-item display-flex">
+    const result = <div className="product-item product-width display-flex">
          <div className="product-image-large">
             <img src={image} alt="product" />
         </div>
-        <div>
-            <div className="product-name">{name}</div>
+        <div className="product-info-large">
+            <div className="product-name bold border-bottom">{name}</div>
             <div className="product-price">{price}</div>
             <div>{description}</div>
             <div className="display-flex">
-                <div className="product-name">{"Quantity: "}</div>
+                <div className="product-name bold">{"Quantity: "}</div>
                 <select className="product-button" name="quantity" value={quantity} onChange={handleOnChange}>
                     {quantities && quantities.map((number) => {
                         const select = <option key ={`quantity_${number}`} value={number}>
@@ -51,6 +51,19 @@ export const ProductLarge = ({cartId, product: {id, image, name, price, descript
                 <div>Add to Cart</div>
             </button>
         </div>
+    </div>
+
+    return(result);
+}
+
+const Products = ({products, selectProduct}) => {
+
+    const items = products && products.map(function(product) {
+        return <Product key={product.name} product={product} onClick={() => {selectProduct(product)}}/>;
+    });
+
+    const result = <div className="product-grid">
+        {items}
     </div>
 
     return(result);
@@ -71,4 +84,4 @@ const Product = ({product: {image, name, price}, onClick}) => {
  return(result);
 }
 
-export default Product;
+export default Products;

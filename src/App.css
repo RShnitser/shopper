@@ -47,4 +47,15 @@ ul {
   box-shadow: 0 0 10px var(--dark-gray);
 }
 
+.border-bottom {
+
+  border-bottom: 1px solid var(--dark-gray);
+  padding-bottom: 10px;
+}
+
+.bold {
+
+  font-weight: bolder;
+}
+
 

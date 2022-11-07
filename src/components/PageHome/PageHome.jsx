@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import { createCart, fetchCategories, fetchProducts } from "../../scripts/services";
 import Pagination from "./Pagination";
 import DropDown, {DropDownItem} from "./DropDown";
-import Product, {ProductLarge} from "./Product";
+import Products, {ProductLarge} from "./Product";
 import SearchBar from "./SearchBar";
 import "./PageHome.css";
 
@@ -43,12 +43,12 @@ const PageHome = () => {
                 const products = result.data.products;
                 const pagination = result.data.pagination;
 
-                setProductData(products, pagination);
+                return({products: products, pagination: pagination});
             }
         }
         catch {
            
-            setProductData(products, pagination);
+            return({products: [], pagination: {}});
         }
     }, [params]);
 
@@ -93,9 +93,10 @@ const PageHome = () => {
     useEffect(() => {
 
         const search = async () => {
-            await searchProducts();
+            const result = await searchProducts();
+            setProductData(result.products, result.pagination);
         }
-
+        
         search();
 
     },[params, searchProducts]);
@@ -103,7 +104,8 @@ const PageHome = () => {
     const handleOnSubmit = async (e) => {
     
         e.preventDefault();
-        await searchProducts();
+        const result = await searchProducts();
+        setProductData(result.products, result.pagination);
     }
 
     const handleOnChange = ({target: {name, value}}) => {
@@ -121,6 +123,9 @@ const PageHome = () => {
     if(loading) {
         result = <div>Loading...</div>;
     }
+    else if(error) {
+        result = <div>Error</div>;
+    }
     else {
         let display = null;
         let itemCount = null;
@@ -137,14 +142,14 @@ const PageHome = () => {
         }
         else {
 
-            display = products && products.map(function(product) {
-                return <Product key={product.name} product={product} onClick={() => {selectProduct(product)}}/>;
-            });
+            // display = products && products.map(function(product) {
+            //     return <Product key={product.name} product={product} onClick={() => {selectProduct(product)}}/>;
+            // });
+
+            display = <Products products={products} selectProduct={selectProduct} />;
 
             pages = <Pagination totalPages={pagination.total_pages} currentPage={pagination.current_page} changePage={setPage} />;
         }
-
-        //const pages = selectedProduct ? null : <Pagination totalPages={pagination.total_pages} currentPage={pagination.current_page} changePage={setPage} />;
 
         result =  <div >
         <div className="nav-container display-flex">
@@ -162,9 +167,10 @@ const PageHome = () => {
                 {itemCount}
             </div>
         </div>
-        <div className="product-grid">
+        {/* <div className="product-grid">
             {display}
-        </div>
+        </div> */}
+        {display}
         {pages}
     </div>
     }
