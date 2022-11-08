@@ -1,18 +1,20 @@
 import React, { useState } from "react";
 import { APP_PAGE } from "../../scripts/constants";
 import PageHome from "../PageHome/PageHome";
+import PageLogin from "../PageLogin/PageLogin";
+
+export const PageContext = React.createContext({
+    // page: APP_PAGE.PAGE_HOME,
+    // setPage: (page) => {},
+})
 
 const ShopperApp = () => {
 
-    // state = {
-    //     page: APP_PAGE.PAGE_HOME,
-    // }
+    
 
     const [page, setPage] = useState(APP_PAGE.PAGE_HOME);
 
-    //render() {
-
-        //const {page} = this.state;
+   
 
     let currentPage = null;
 
@@ -20,12 +22,18 @@ const ShopperApp = () => {
         case APP_PAGE.PAGE_HOME:
             currentPage = <PageHome />
         break;
+        case APP_PAGE.PAGE_LOGIN:
+            currentPage = <PageLogin />
+        break;
         default:
         break;
     }
 
-    return(currentPage);
-    //}
+    const result = <PageContext.Provider value={{setAppPage: setPage}}>
+        {currentPage}
+    </PageContext.Provider>
+
+    return(result);
 }
 
 export default ShopperApp;

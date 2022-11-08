@@ -4,7 +4,9 @@ import Pagination from "./Pagination";
 import DropDown, {DropDownItem} from "./DropDown";
 import Products, {ProductLarge} from "./Product";
 import SearchBar from "./SearchBar";
+import { PageContext } from "../ShopperApp/ShopperApp";
 import "./PageHome.css";
+import { APP_PAGE } from "../../scripts/constants";
 
 const PageHome = () => {
 
@@ -150,6 +152,8 @@ const PageHome = () => {
 
             pages = <Pagination totalPages={pagination.total_pages} currentPage={pagination.current_page} changePage={setPage} />;
         }
+        
+        // const setPage = React.useContext(PageContext);
 
         result =  <div >
         <div className="nav-container display-flex">
@@ -157,10 +161,15 @@ const PageHome = () => {
 
             <SearchBar categories={categories} query={params.query} handleOnChange={handleOnChange} handleOnSubmit={handleOnSubmit}/>
 
-            <DropDown title={"Sign In"}>
-                <DropDownItem  label={"Sign In"}/>
-                <DropDownItem label={"Create Account"}/>
-            </DropDown>
+            
+           <PageContext.Consumer>
+               {({setAppPage}) => (
+                <DropDown title={"Sign In"}>
+                    <DropDownItem  label={"Sign In"} onClick={() => {setAppPage(APP_PAGE.PAGE_LOGIN)}}/>
+                    <DropDownItem label={"Create Account"}/>
+                </DropDown>
+               )}
+           </PageContext.Consumer>
 
             <div className="cart-icon">
                 <i className="fa-solid fa-cart-shopping"></i>
