@@ -1,0 +1,36 @@
+/* .page-margin-padding {
+    padding: 20px;
+    margin: 20px;
+  } */
+
+.login-width {
+    max-width: 350px;
+    /* background-color: brown; */
+}
+
+.form-container {
+    /* background-color: blue; */
+    /* width: 100%; */
+    padding: 20px;
+    margin: 20px auto;
+}
+
+.form-grid {
+    display: grid;
+    gap: 10px;
+    margin: 10px;
+}
+
+.form-btn {
+    display: block;
+    width: 100%;
+    margin: 20px 0;
+    padding: 10px 0;
+    color: white;
+    font-weight: bold;
+    border: none;
+    text-transform: uppercase;
+    background-color: var(--blue);
+  }
+
+  

@@ -27,6 +27,20 @@ ul {
   padding: 0;
 }
 
+input[type="radio"]{
+  appearance: none;
+  background-clip: content-box;
+  width: 1.2rem;
+  height: 1.2rem;
+  border: 2px solid var(--gray);
+  border-radius: 50%;
+  padding: 1px;
+}
+
+input[type="radio"]:checked{
+  background-color: var(--blue);
+}
+
 .center-container {
   display: flex;
   flex-direction: column;
@@ -58,4 +72,7 @@ ul {
   font-weight: bolder;
 }
 
-
+.display-flex {
+    
+  display: flex;
+}
