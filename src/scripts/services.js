@@ -5,6 +5,38 @@
 
 const COMMERCE_API = process.env.REACT_APP_CHEC_PUBLIC_KEY;
 
+//let nextId = 2;
+let currentUserID = null;
+
+const users = [
+    {
+        id: 1,
+        email: "user@test.com",
+        password: "AAbb123!",
+        firstName: "Test",
+        lastName: "Test",
+        zip: 12345,
+        //cart: InitCart(),
+    },
+];
+
+export function loginUser(email, password) {
+
+    let result = false;
+  
+    const userIndex = users.findIndex(function(user) {
+        return user.email === email && user.password === password;
+    });
+
+    if(userIndex > -1)
+    {
+        currentUserID = users[userIndex].id;
+        result = true;
+    }
+
+    return result;
+}
+
 export async function fetchProducts(params={}) {
    
     return new Promise(async function(success, failure) {

@@ -1,10 +1,10 @@
 import React, { useContext } from "react";
 import { APP_PAGE } from "../../scripts/constants";
-import { PageContext } from "../ShopperApp/ShopperApp";
+import { AppContext } from "../ShopperApp/ShopperApp";
 
 const LoginSwitch = () => {
 
-    const {currentPage, setAppPage} = useContext(PageContext);
+    const {currentPage, setAppPage} = useContext(AppContext);
 
     // const result = <PageContext.Consumer>
     //     {(currentPage, setAppPage) => {
@@ -23,10 +23,10 @@ const LoginSwitch = () => {
                 {label: "CREATE ACCOUNT", value: APP_PAGE.PAGE_CREATE},
             ];
         
-            const result = <div className="display-flex">
+            const result = <div className="display-flex space-between">
                 {buttonData.map(function(data) {
                     return(
-                        <label className={data.defaultChecked ? "label-horizontal error" : "label-horizontal"}  key={data.label}>
+                        <label className={currentPage === data.value ? "label-horizontal text-blue" : "label-horizontal"}  key={data.label}>
                             <input
                                 type="radio"
                                 name="account"

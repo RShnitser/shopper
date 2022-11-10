@@ -4,9 +4,9 @@ import Pagination from "./Pagination";
 import DropDown, {DropDownItem} from "./DropDown";
 import Products, {ProductLarge} from "./Product";
 import SearchBar from "./SearchBar";
-import { PageContext } from "../ShopperApp/ShopperApp";
-import "./PageHome.css";
+import { AppContext } from "../ShopperApp/ShopperApp";
 import { APP_PAGE } from "../../scripts/constants";
+import "./PageHome.css";
 
 const PageHome = () => {
 
@@ -162,14 +162,14 @@ const PageHome = () => {
             <SearchBar categories={categories} query={params.query} handleOnChange={handleOnChange} handleOnSubmit={handleOnSubmit}/>
 
             
-           <PageContext.Consumer>
+           <AppContext.Consumer>
                {({setAppPage}) => (
                 <DropDown title={"Sign In"}>
                     <DropDownItem  label={"Sign In"} onClick={() => {setAppPage(APP_PAGE.PAGE_LOGIN)}}/>
                     <DropDownItem label={"Create Account"}/>
                 </DropDown>
                )}
-           </PageContext.Consumer>
+           </AppContext.Consumer>
 
             <div className="cart-icon">
                 <i className="fa-solid fa-cart-shopping"></i>

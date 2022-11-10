@@ -5,23 +5,16 @@
 
 .login-width {
     max-width: 350px;
-    /* background-color: brown; */
 }
 
-.form-container {
-    /* background-color: blue; */
-    /* width: 100%; */
+.login-container {
     padding: 20px;
     margin: 20px auto;
 }
 
-.form-grid {
-    display: grid;
-    gap: 10px;
-    margin: 10px;
-}
 
-.form-btn {
+
+.login-btn {
     display: block;
     width: 100%;
     margin: 20px 0;

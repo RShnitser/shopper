@@ -73,6 +73,23 @@ input[type="radio"]:checked{
 }
 
 .display-flex {
-    
   display: flex;
+}
+
+.space-between {
+  justify-content: space-between;
+}
+
+.display-grid {
+  display: grid;
+  gap: 10px;
+  margin: 10px;
+}
+
+.grid-span-2 {
+  grid-column: span 2;
+}
+
+.grid-span-3 {
+  grid-column: span 3;
 }

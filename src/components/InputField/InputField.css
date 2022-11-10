@@ -19,13 +19,13 @@
     grid-template-columns: 1fr 2fr;
     align-items: center;
     margin: 0 10px;
-}
+}*/
 
 .label-horizontal {
     display: flex;
     flex-direction: row;
     align-items: center;
-} */
+} 
 
 .label-container {
     display: block;
@@ -49,26 +49,24 @@
 
 /* .grid-center {
     align-items: center;
-}
+}*/
 
 .grid-columns-3 {
     grid-template-columns: repeat(3, auto);
 }
 
-.grid-columns-4 {
+/*.grid-columns-4 {
     grid-template-columns: repeat(4, auto);
 } */
 
-.grid-span-2 {
-    grid-column: span 2;
-}
 
-.grid-span-3 {
-    grid-column: span 3;
-}
 
 .text-end {
     text-align: end;
+}
+
+.text-blue {
+    color: var(--blue);
 }
 
 /* .text-center {
