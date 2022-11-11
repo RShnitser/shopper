@@ -5,7 +5,7 @@
 
 const COMMERCE_API = process.env.REACT_APP_CHEC_PUBLIC_KEY;
 
-//let nextId = 2;
+let nextId = 2;
 let currentUserID = null;
 
 const users = [
@@ -35,6 +35,60 @@ export function loginUser(email, password) {
     }
 
     return result;
+}
+
+function findUserByEmail(email) {
+    
+    let result = null;
+  
+    const userIndex = users.findIndex(function(user) {
+        return user.email === email;
+    });
+
+    if(userIndex > -1)
+    {
+        result = users[userIndex].id;
+    }
+
+    return result;
+}
+
+function setUserInfo(_id, email, password, firstName, lastName, zip) {
+
+    const result = {
+        id: _id,
+        email: email,
+        password: password,
+        firstName: firstName,
+        lastName: lastName,
+        zip: zip,
+        //cart: InitCart(),
+
+    };
+    
+    return result;
+}
+
+export function createUser(email, password, firstName, lastName, zip) {
+    
+    let result = {
+        error: "SUCCESS",
+        message: ""
+    }
+    const exists = findUserByEmail(email);
+   
+    if(!exists) {
+     
+        const newUser = setUserInfo(++nextId, email, password, firstName, lastName, zip);
+        users.push(newUser);
+    
+    }
+    else {
+        result.error = "FAILURE"
+        result.message = "Account with this email already exists"
+    }
+
+   return result;
 }
 
 export async function fetchProducts(params={}) {

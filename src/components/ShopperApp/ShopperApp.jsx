@@ -14,7 +14,7 @@ const ShopperApp = () => {
     
 
     const [page, setPage] = useState(APP_PAGE.PAGE_HOME);
-
+    const [account, setAccount] = useState(null);
    
 
     let currentPage = null;
@@ -36,7 +36,9 @@ const ShopperApp = () => {
     const result = <AppContext.Provider 
         value={{
             currentPage: page, 
-            setAppPage: setPage
+            setAppPage: setPage,
+            account: account,
+            setAccount: setAccount,
         }}
     >
         {currentPage}

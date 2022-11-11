@@ -166,7 +166,7 @@ const PageHome = () => {
                {({setAppPage}) => (
                 <DropDown title={"Sign In"}>
                     <DropDownItem  label={"Sign In"} onClick={() => {setAppPage(APP_PAGE.PAGE_LOGIN)}}/>
-                    <DropDownItem label={"Create Account"}/>
+                    <DropDownItem label={"Create Account"} onClick={() => {setAppPage(APP_PAGE.PAGE_CREATE)}}/>
                 </DropDown>
                )}
            </AppContext.Consumer>
