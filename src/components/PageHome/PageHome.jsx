@@ -112,11 +112,16 @@ const PageHome = () => {
 
     const handleOnChange = ({target: {name, value}}) => {
 
-        setParams({...params, [name] : value, page: ""});
+        setParams((prevParams) => {
+            return {...prevParams, [name] : value, page: ""};
+        });
     }
 
     const setPage = (number) => {
-        setParams({...params, page : String(number)}); 
+        //setParams({...params, page : String(number)}); 
+        setParams((prevParams) => {
+            return {...prevParams, page: String(number)};
+        });
     };
 
 

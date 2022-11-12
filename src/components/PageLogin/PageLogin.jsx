@@ -1,9 +1,10 @@
 import React, { useContext, useState } from "react";
 import LoginForm from "./LoginForm";
 import { APP_PAGE, INPUT_LOGIN } from "../../scripts/constants";
-import { validateEmail } from "../../scripts/validations";
+//import { validateEmail } from "../../scripts/validations";
 import { AppContext } from "../ShopperApp/ShopperApp";
 import { loginUser } from "../../scripts/services";
+import useInputValidations from "../../hooks/UseInputValidations";
 
 const INIT_ACCOUNT = {
     email: "",
@@ -17,6 +18,8 @@ const PageLogin = () => {
     const [error, setError] = useState({});
 
     const {setAppPage} = useContext(AppContext);
+
+    const [handleInput, handleBlur, checkErrorBeforeSave] = useInputValidations(account, error, setAccount, setError, setErrorM);
 
     const handleOnSubmit = ({email, password}) => {
        
@@ -37,94 +40,78 @@ const PageLogin = () => {
         }
     }
 
-    const handleInput = ({target: {name, value}}) => {
+    // const handleInput = ({target: {name, value}}) => {
 
-        // this.setState(function(prevState) {
-        //     return {
-        //         account: {
-        //             ...prevState.account,
-        //             [name]: value,
-        //         }};
-        //     });
-        setAccount({
-            ...account,
-            [name]: value,
-        });
-    }
+    //     setAccount({
+    //         ...account,
+    //         [name]: value,
+    //     });
+    // }
 
-    const handleBlur = ({target: {name, value}}) => {
+    // const handleBlur = ({target: {name, value}}) => {
         
-        const errorText = handleValidations(name, value);
+    //     const errorText = handleValidations(name, value);
 
-        let errorValue = {...error};
+    //     let errorValue = {...error};
 
-        let errorKey = `${name}Error`;
+    //     let errorKey = `${name}Error`;
 
-        if(errorText) {
-            errorValue[errorKey] = errorText;
-        }
-        else {
-            delete errorValue[errorKey];
-        }
+    //     if(errorText) {
+    //         errorValue[errorKey] = errorText;
+    //     }
+    //     else {
+    //         delete errorValue[errorKey];
+    //     }
 
-        // this.setState({
-        //     error: errorValue,
-        // })
+    //     setError(errorValue);
+    // }
 
-        setError(errorValue);
-    }
+    // const handleValidations = (type, value) => {
 
-    const handleValidations = (type, value) => {
-
-        let errorText;
+    //     let errorText;
       
-        switch(type) {
+    //     switch(type) {
             
-            case INPUT_LOGIN.LOGIN_EMAIL:
-                errorText = validateEmail(value);
-            break;
+    //         case INPUT_LOGIN.LOGIN_EMAIL:
+    //             errorText = validateEmail(value);
+    //         break;
            
-            default:
-            break;
-        }
+    //         default:
+    //         break;
+    //     }
 
-        return errorText;
-    }
+    //     return errorText;
+    // }
 
-    const checkErrorBeforeSave = () => {
+    // const checkErrorBeforeSave = () => {
         
-        //const {account} = this.state;
-        let errorValue = {};
-        let isError = false;
+    //     let errorValue = {};
+    //     let isError = false;
 
-        for(const key of Object.keys(account)) {
+    //     for(const key of Object.keys(account)) {
             
-            let errorKey = `${key}Error`;
+    //         let errorKey = `${key}Error`;
             
-            if(!account[key].length) {
+    //         if(!account[key].length) {
 
-                errorValue = {...errorValue, [errorKey]: "Required"};
-                isError = true;
-            }
-            else {
-                const errorText = handleValidations(key, account[key]);
+    //             errorValue = {...errorValue, [errorKey]: "Required"};
+    //             isError = true;
+    //         }
+    //         else {
+    //             const errorText = handleValidations(key, account[key]);
 
-                if(errorText) {
-                    errorValue = {...errorValue, [errorKey]: errorText};
-                    isError = true;
-                }
-            }
-        }
+    //             if(errorText) {
+    //                 errorValue = {...errorValue, [errorKey]: errorText};
+    //                 isError = true;
+    //             }
+    //         }
+    //     }
 
-        // this.setState({
-        //     error: errorValue,
-        //     errorM: undefined,
-        // });
-        setError(errorValue);
-        setErrorM(undefined);
+    //     setError(errorValue);
+    //     setErrorM(undefined);
 
-        return isError;
-    }
+    //     return isError;
+    // }
 
    
 
