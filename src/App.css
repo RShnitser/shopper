@@ -1,5 +1,99 @@
+:root {
+  --background-color: white;
+  --font-color: black;
+  --red: #cc2c53;
+  --blue: #415a92;
+  --light-gray: #f5f5f5;
+  --gray: lightgray;
+  --dark-gray: #545454;
+  --error-bg: #fdf6f5;
+
+  --font-18: 1.125rem;
+}
+
 *,
-:before,
-:after {
+::before,
+::after {
   box-sizing: border-box;
+}
+
+img {
+  width: 100%;
+}
+
+ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+input[type="radio"]{
+  appearance: none;
+  background-clip: content-box;
+  width: 1.2rem;
+  height: 1.2rem;
+  border: 2px solid var(--gray);
+  border-radius: 50%;
+  padding: 1px;
+}
+
+input[type="radio"]:checked{
+  background-color: var(--blue);
+}
+
+.center-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: 20px;
+  /* width: 100%;
+  height: 100vh; */
+}
+
+/* .page-container {
+  display: flex;
+  padding: 20px;
+  margin: 20px;
+} */
+
+.shadow {
+  box-shadow: 0 0 10px var(--dark-gray);
+}
+
+.border-bottom {
+
+  border-bottom: 1px solid var(--dark-gray);
+  padding-bottom: 10px;
+}
+
+.bold {
+
+  font-weight: bolder;
+}
+
+.display-flex {
+  display: flex;
+}
+
+.space-between {
+  justify-content: space-between;
+}
+
+.display-grid {
+  display: grid;
+  gap: 10px;
+  margin: 10px;
+}
+
+.grid-span-2 {
+  grid-column: span 2;
+}
+
+.grid-span-3 {
+  grid-column: span 3;
+}
+
+.error {
+  color: var(--red);
 }

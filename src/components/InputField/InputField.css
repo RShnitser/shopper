@@ -1,0 +1,91 @@
+.input-field {
+    padding: 10px 5px;
+    margin: 0 5px;
+    border-style: solid;
+    width: 100%;
+}
+
+/* .input-option {
+    background-color: var(--light-gray);
+    border: none;
+    outline: none;
+    padding: 10px 15px;
+    font-weight: bold;
+    color: var(--dark-gray);
+} */
+
+/* .input-horizontal {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    align-items: center;
+    margin: 0 10px;
+}*/
+
+.label-horizontal {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+} 
+
+.label-container {
+    display: block;
+    margin: 20px 0;
+}
+
+.label-text {
+    font-size: var(--font-18);
+    font-weight: bold;
+}
+
+.error-background {
+    border-color: var(--red);
+    background-color: var(--error-bg);
+}
+
+/* .input-flex {
+    display: flex;
+} */
+
+
+/* .grid-center {
+    align-items: center;
+}*/
+
+.grid-columns-3 {
+    grid-template-columns: repeat(3, auto);
+}
+
+/*.grid-columns-4 {
+    grid-template-columns: repeat(4, auto);
+} */
+
+
+
+.text-end {
+    text-align: end;
+}
+
+.text-blue {
+    color: var(--blue);
+}
+
+/* .text-center {
+    text-align: center;
+} */
+
+.input-icon {
+    margin-left: -15%;
+    border: none;
+    outline: none;
+    background-color: transparent;
+   
+}
+
+/* .card-icon {
+    width: 50px;
+    align-self: center;
+}
+
+.card-icon-margin {
+    margin-left: -25%;
+} */

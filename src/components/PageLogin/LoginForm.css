@@ -1,0 +1,29 @@
+/* .page-margin-padding {
+    padding: 20px;
+    margin: 20px;
+  } */
+
+.login-width {
+    max-width: 350px;
+}
+
+.login-container {
+    padding: 20px;
+    margin: 20px auto;
+}
+
+
+
+.login-btn {
+    display: block;
+    width: 100%;
+    margin: 20px 0;
+    padding: 10px 0;
+    color: white;
+    font-weight: bold;
+    border: none;
+    text-transform: uppercase;
+    background-color: var(--blue);
+  }
+
+  
