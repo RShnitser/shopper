@@ -2,7 +2,8 @@ import React, {useState, useContext} from "react";
 import LoginForm from "./LoginForm";
 import { APP_PAGE, INPUT_LOGIN } from "../../scripts/constants";
 import { createUser, loginUser } from "../../scripts/services";
-import { validateEmail, validatePassword, validateSecurityCode } from "../../scripts/validations";
+//import { validateEmail, validatePassword, validateSecurityCode } from "../../scripts/validations";
+import useInputValidations from "../../hooks/UseInputValidations";
 import { AppContext } from "../ShopperApp/ShopperApp";
 
 const INIT_ACCOUNT = {
@@ -22,6 +23,9 @@ const PageCreateAccount = () => {
     const [error, setError] = useState({});
 
     const {setAppPage} = useContext(AppContext);
+
+    const [handleInput, handleBlur, checkErrorBeforeSave] = useInputValidations(account, error, setAccount, setError, setErrorM);
+
 
     const handleOnSubmit = ({email, password, firstName, lastName, zip}) => {
 
@@ -43,100 +47,100 @@ const PageCreateAccount = () => {
         }
     }
 
-     const handleInput = ({target: {name, value}}) => {
+    //  const handleInput = ({target: {name, value}}) => {
       
-        let result = value;
-        if(name === INPUT_LOGIN.LOGIN_ZIP) {
-            result = value.replace(/\D/g, "");
-        }
-        else if(name === INPUT_LOGIN.LOGIN_FIRST_NAME || name === INPUT_LOGIN.LOGIN_LAST_NAME) {
-            result = value.replace(/[^A-Z]/ig, "");
-        }
+    //     let result = value;
+    //     if(name === INPUT_LOGIN.LOGIN_ZIP) {
+    //         result = value.replace(/\D/g, "");
+    //     }
+    //     else if(name === INPUT_LOGIN.LOGIN_FIRST_NAME || name === INPUT_LOGIN.LOGIN_LAST_NAME) {
+    //         result = value.replace(/[^A-Z]/ig, "");
+    //     }
 
-        setAccount({
-            ...account,
-            [name]: result,
-        });
-    }
+    //     setAccount({
+    //         ...account,
+    //         [name]: result,
+    //     });
+    // }
 
-    const handleBlur = ({target: {name, value}}) => {
+    // const handleBlur = ({target: {name, value}}) => {
         
-        const errorText = handleValidations(name, value);
+    //     const errorText = handleValidations(name, value);
 
-        let errorValue = error;
+    //     let errorValue = error;
 
-        let errorKey = `${name}Error`;
+    //     let errorKey = `${name}Error`;
 
-        if(errorText) {
-            errorValue[errorKey] = errorText;
-        }
-        else {
-            delete errorValue[errorKey];
-        }
+    //     if(errorText) {
+    //         errorValue[errorKey] = errorText;
+    //     }
+    //     else {
+    //         delete errorValue[errorKey];
+    //     }
 
-       setError(errorValue);
-    }
+    //    setError(errorValue);
+    // }
 
-    const handleValidations = (type, value) => {
+    // const handleValidations = (type, value) => {
 
-        let errorText;
+    //     let errorText;
       
-        switch(type) {
-            case INPUT_LOGIN.LOGIN_EMAIL:
-                errorText = validateEmail(value);
-            break;
+    //     switch(type) {
+    //         case INPUT_LOGIN.LOGIN_EMAIL:
+    //             errorText = validateEmail(value);
+    //         break;
 
-            case INPUT_LOGIN.LOGIN_PASSWORD:
-                errorText = validatePassword(value);
-            break;
+    //         case INPUT_LOGIN.LOGIN_PASSWORD:
+    //             errorText = validatePassword(value);
+    //         break;
 
-            case INPUT_LOGIN.LOGIN_CONFIRM:
-                //const {account: {password}} = this.state;
-                if(account.password !== value) {
-                    errorText = "Must match password";
-                }
-            break;
+    //         case INPUT_LOGIN.LOGIN_CONFIRM:
+    //             //const {account: {password}} = this.state;
+    //             if(account.password !== value) {
+    //                 errorText = "Must match password";
+    //             }
+    //         break;
 
-            case INPUT_LOGIN.LOGIN_ZIP:
-                errorText = validateSecurityCode(5, value);
-            break;
+    //         case INPUT_LOGIN.LOGIN_ZIP:
+    //             errorText = validateSecurityCode(5, value);
+    //         break;
 
-            default:
-            break;
-        }
+    //         default:
+    //         break;
+    //     }
 
-        return errorText;
-    }
+    //     return errorText;
+    // }
 
-    const checkErrorBeforeSave = () => {
+    // const checkErrorBeforeSave = () => {
         
-        let errorValue = {};
-        let isError = false;
+    //     let errorValue = {};
+    //     let isError = false;
 
-        for(const key of Object.keys(account)) {
+    //     for(const key of Object.keys(account)) {
             
-            let errorKey = `${key}Error`;
+    //         let errorKey = `${key}Error`;
             
-            if(!account[key].length) {
+    //         if(!account[key].length) {
 
-                errorValue = {...errorValue, [errorKey]: "Required"};
-                isError = true;
-            }
-            else {
-                const errorText = handleValidations(key, account[key]);
+    //             errorValue = {...errorValue, [errorKey]: "Required"};
+    //             isError = true;
+    //         }
+    //         else {
+    //             const errorText = handleValidations(key, account[key]);
 
-                if(errorText) {
-                    errorValue = {...errorValue, [errorKey]: errorText};
-                    isError = true;
-                }
-            }
-        }
+    //             if(errorText) {
+    //                 errorValue = {...errorValue, [errorKey]: errorText};
+    //                 isError = true;
+    //             }
+    //         }
+    //     }
 
-        setError(errorValue);
-        setErrorM(undefined);
+    //     setError(errorValue);
+    //     setErrorM(undefined);
 
-        return isError;
-    }
+    //     return isError;
+    // }
 
     const createData = [
         {label: "E-mail", type: "email", name: INPUT_LOGIN.LOGIN_EMAIL},
