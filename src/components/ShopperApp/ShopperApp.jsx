@@ -3,6 +3,7 @@ import { APP_PAGE } from "../../scripts/constants";
 import PageHome from "../PageHome/PageHome";
 import PageCreateAccount from "../PageLogin/PageCreateAccount";
 import PageLogin from "../PageLogin/PageLogin";
+import PageCart from "../PageCart/PageCart";
 
 export const AppContext = React.createContext({
     // page: APP_PAGE.PAGE_HOME,
@@ -15,8 +16,8 @@ const ShopperApp = () => {
 
     const [page, setPage] = useState(APP_PAGE.PAGE_HOME);
     const [account, setAccount] = useState(null);
-   
-
+    const [cart, setCart] = useState({});
+    
     let currentPage = null;
 
     switch(page) {
@@ -29,6 +30,9 @@ const ShopperApp = () => {
         case APP_PAGE.PAGE_CREATE:
             currentPage = <PageCreateAccount />
         break;
+        case APP_PAGE.PAGE_CART:
+            currentPage = <PageCart />
+        break;
         default:
         break;
     }
@@ -39,6 +43,8 @@ const ShopperApp = () => {
             setAppPage: setPage,
             account: account,
             setAccount: setAccount,
+            cart: cart,
+            setCart: setCart,
         }}
     >
         {currentPage}

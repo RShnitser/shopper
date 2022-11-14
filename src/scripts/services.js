@@ -199,6 +199,16 @@ export async function createCart() {
     return result;
 }
 
+export async function getCart(id) {
+
+    const url = new URL("https://api.chec.io/v1/carts");
+    const params = {id: id};
+
+    const result = await fetchAPI(url, params);
+
+    return result;
+}
+
 export async function addToCart(cartId, productID, productQuantity) {
     
     return new Promise(async function(success, failure) {
