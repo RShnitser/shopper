@@ -1,6 +1,6 @@
 import React from "react";
 
-const CartItem = (product, quantity) => {
+const CartItem = ({product}) => {
 
     const handleOnChange = () => {
 
@@ -18,27 +18,27 @@ const CartItem = (product, quantity) => {
         <div className="product-container">
             <div className="product-info-container">
                 <div className="product-image">
-                    <img src={product.image} alt={product.name}/>
+                    <img src={product.image.url} alt={product.name}/>
                 </div>
                 <div>
                     <div className="product-bold">
                         {product.name}
                     </div>
-                    <div className="product-info">
+                    {/* <div className="product-info">
                         <div>Color:</div>
                         <div className="product-bold">{product.color}</div>
                         <div>Size:</div>
                         <div className="product-bold">{product.size}</div>
-                    </div>
+                    </div> */}
                 </div>
             </div>
         </div>
 
-        <div className="bold">{`$${product.price}`}</div>
+        <div className="bold">{product.price.formatted_with_symbol}</div>
        
-        <input name={product.id} type="number" min="0" value={quantity} onChange={handleOnChange}/>
+        <input name={product.id} type="number" min="0" value={product.quantity} onChange={handleOnChange}/>
         
-        <div className="bold">{`$${(product.price * quantity).toFixed(2)}`}</div>
+        <div className="bold">{`$${(product.price.raw * product.quantity).toFixed(2)}`}</div>
     </div>
 
     return(result);

@@ -1,5 +1,7 @@
 import React, {useContext} from "react";
 import { AppContext } from "../ShopperApp/ShopperApp";
+import CartItem from "./CartItem";
+import InfoForm from "./InfoForm";
 
 const PageCart = () => {
 
@@ -42,7 +44,7 @@ const PageCart = () => {
 
         const items = cart.line_items && cart.line_items.map(function(product) {
             //return <Product key={product.name} product={product} onClick={() => {}}/>;
-            return <div>{product.name}</div>;
+            return <CartItem key={product.name} product={product}/>;
         });
     
         const result = <div className="product-grid">
@@ -52,9 +54,9 @@ const PageCart = () => {
         return(result);
     }
 
-    const result = <div>
+    const result = <InfoForm progress={1}>
         {mapProducts()}
-    </div>;
+    </InfoForm>;
 
     return(result);
 }
