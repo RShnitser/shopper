@@ -2,6 +2,7 @@ import React, {useContext} from "react";
 import { AppContext } from "../ShopperApp/ShopperApp";
 import CartItem from "./CartItem";
 import InfoForm from "./InfoForm";
+import "./PageCart.css";
 
 const PageCart = () => {
 
@@ -40,22 +41,33 @@ const PageCart = () => {
 
     // }, []);
 
+    // const mapHeaders = () => {
+        
+    //     const headers = ["", "Product", "Price", "Quantity", "Total Price"];
+
+    //     let result = headers.map(function(header) {
+    //         return(<div key={`header-${header}`} className="bold">{header}</div>);
+    //     });
+
+    //     return result;
+    // }
+
     const mapProducts = () => {
 
-        const items = cart.line_items && cart.line_items.map(function(product) {
+        const result = cart.line_items && cart.line_items.map(function(product) {
             //return <Product key={product.name} product={product} onClick={() => {}}/>;
             return <CartItem key={product.name} product={product}/>;
         });
     
-        const result = <div className="product-grid">
-            {items}
-        </div>
-    
         return(result);
     }
 
+
     const result = <InfoForm progress={1}>
-        {mapProducts()}
+        <div className="">
+            {/* {mapHeaders()} */}
+            {mapProducts()}
+        </div>
     </InfoForm>;
 
     return(result);

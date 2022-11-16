@@ -94,6 +94,10 @@ input[type="radio"]:checked{
   grid-column: span 3;
 }
 
+.grid-col-5 {
+  grid-template-columns: repeat(5, auto);
+}
+
 .error {
   color: var(--red);
 }

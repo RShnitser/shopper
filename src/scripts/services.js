@@ -194,7 +194,7 @@ export async function createCart() {
 
     const url = new URL("https://api.chec.io/v1/carts");
     
-    const result = await fetchAPI(url);
+    const result = await fetchGET(url);
 
     return result;
 }
@@ -204,7 +204,7 @@ export async function getCart(id) {
     const url = new URL("https://api.chec.io/v1/carts");
     const params = {id: id};
 
-    const result = await fetchAPI(url, params);
+    const result = await fetchGET(url, params);
 
     return result;
 }
@@ -257,7 +257,121 @@ export async function addToCart(cartId, productID, productQuantity) {
     });
 }
 
-async function fetchAPI(url, params=[]) {
+export async function updateItemInCart(cartId, productID, productQuantity) {
+    return new Promise(async function(success, failure) {
+        try {
+
+            const url = `https://api.chec.io/v1/carts/${cartId}/items/${productID}`;
+
+            const body = {
+                quantity: productQuantity,
+            }
+
+            const headers = {
+                "X-Authorization": COMMERCE_API,
+                "Accept": "application/json",
+                "Content-Type": "application/json",
+            };
+
+            const response = await fetch(url, {
+                method: "PUT", 
+                headers: headers,
+                body: JSON.stringify(body),
+            });
+            
+            if(response.ok) {
+    
+                const data = await response.json();
+    
+                success({response, data});
+            }
+            else {
+                failure({error: "invalid http request"});
+            }
+        
+        }
+        catch(error) {
+            failure(error);
+        }
+    });
+}
+
+export async function removeItemFromCart(cartId, productID) {
+    return new Promise(async function(success, failure) {
+        try {
+
+            const url = `https://api.chec.io/v1/carts/${cartId}/items/${productID}`;
+
+            console.log(url);
+
+            const headers = {
+                "X-Authorization": COMMERCE_API,
+                "Accept": "application/json",
+                "Content-Type": "application/json",
+            };
+
+            const response = await fetch(url, {
+                method: "DELETE", 
+                headers: headers,
+            });
+            
+            if(response.ok) {
+    
+                const data = await response.json();
+    
+                success({response, data});
+            }
+            else {
+                failure({error: "invalid http request"});
+            }
+        
+        }
+        catch(error) {
+            failure(error);
+        }
+    });
+}
+
+export async function applyDiscount(cartId, discount) {
+    return new Promise(async function(success, failure) {
+        try {
+
+            const url = `https://api.chec.io/v1/carts/${cartId}}`;
+
+            const body = {
+                discount_code: discount,
+            }
+
+            const headers = {
+                "X-Authorization": COMMERCE_API,
+                "Accept": "application/json",
+                "Content-Type": "application/json",
+            };
+
+            const response = await fetch(url, {
+                method: "PUT", 
+                headers: headers,
+                body: JSON.stringify(body),
+            });
+            
+            if(response.ok) {
+    
+                const data = await response.json();
+    
+                success({response, data});
+            }
+            else {
+                failure({error: "invalid http request"});
+            }
+        
+        }
+        catch(error) {
+            failure(error);
+        }
+    });
+}
+
+async function fetchGET(url, params=[]) {
     return new Promise(async function(success, failure) {
         try {
 
