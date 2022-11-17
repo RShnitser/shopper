@@ -1,4 +1,6 @@
 import React, {useContext} from "react";
+import { APP_PAGE } from "../../scripts/constants";
+import Button from "../Button/Button";
 import { AppContext } from "../ShopperApp/ShopperApp";
 import CartItem from "./CartItem";
 import InfoForm from "./InfoForm";
@@ -10,7 +12,7 @@ const PageCart = () => {
     //const [error, setError] = useState(false);
     //onst [cart, setCart] = useState({});
 
-    const {cart} = useContext(AppContext);
+    const {setAppPage, cart} = useContext(AppContext);
 
     // useEffect(() => {
         
@@ -52,6 +54,10 @@ const PageCart = () => {
     //     return result;
     // }
 
+    const onHandleBack = () => {
+        setAppPage(APP_PAGE.PAGE_HOME);
+    }
+
     const mapProducts = () => {
 
         const result = cart.line_items && cart.line_items.map(function(product) {
@@ -67,6 +73,10 @@ const PageCart = () => {
         <div className="">
             {/* {mapHeaders()} */}
             {mapProducts()}
+            <Button 
+                text="HOME"
+                onClick={onHandleBack}
+            />
         </div>
     </InfoForm>;
 

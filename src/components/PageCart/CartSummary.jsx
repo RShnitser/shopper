@@ -1,22 +1,38 @@
-import React, { useContext } from "react";
+import React, { useState, useContext } from "react";
 import { AppContext } from "../ShopperApp/ShopperApp";
 import { APP_PAGE } from "../../scripts/constants";
+import { applyDiscount } from "../../scripts/services";
 
 const CartSummary = () => {
 
-    const {page, cart} = useContext(AppContext);
+    const [discount, setDiscount] = useState("");
+
+    const {currentPage, cart, setCart} = useContext(AppContext);
 
     //const quantity = cart.totalItems;
 
-    const onClickDiscount = () => {
+    const handleOnSubmit = async (e) => {
 
+        e.preventDefault();
+        try {
+
+            const result = await applyDiscount(cart.id, discount);
+
+            if(result && result.response.ok) {
+
+                setCart(result.data);
+            }
+        }
+        catch {
+
+        }
     }
 
-    const handleChange = () => {
-
+    const handleChange = ({target: {value}}) => {
+        setDiscount(value);
     }
       
-    let discount = <></>;
+    let discountForm = <></>;
     let discountPrice = "-";
     let count = <></>;
     let items = <></>;
@@ -34,10 +50,11 @@ const CartSummary = () => {
     //     discountPrice = `-$${cart.discount.toFixed(2)}`;
     // }
 
-    if(page === APP_PAGE.PAGE_CART)
+
+    if(currentPage === APP_PAGE.PAGE_CART)
     {
         //const error = this.state.error && <div className="error">{this.state.error}</div>
-        discount = <form  className="border-bottom" onSubmit={onClickDiscount}>
+        discountForm = <form  className="border-bottom" onSubmit={handleOnSubmit}>
                     <div>Do you have a promo code?</div>
                     <div className="display-flex">
                         <input className="promo" type="text" placeholder="Code" onChange={handleChange}/>
@@ -114,7 +131,7 @@ const CartSummary = () => {
 
     const result =   <div className="summary cart-container padding shadow">
         <h2 className="align-right border-bottom bold">Summary</h2>
-        {discount}
+        {discountForm}
         {count}
         {items}
         <div className="border-bottom"> 

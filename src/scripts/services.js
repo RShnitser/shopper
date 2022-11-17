@@ -336,7 +336,7 @@ export async function applyDiscount(cartId, discount) {
     return new Promise(async function(success, failure) {
         try {
 
-            const url = `https://api.chec.io/v1/carts/${cartId}}`;
+            const url = `https://api.chec.io/v1/carts/${cartId}`;
 
             const body = {
                 discount_code: discount,

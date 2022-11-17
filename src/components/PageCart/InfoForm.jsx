@@ -4,12 +4,12 @@ import ProgressBar from "./ProgressBar";
 
 const InfoForm = ({progress, children}) => {
 
-    const result = <div className="display-flex shadow">
+    const result = <div className="display-flex page-margin shadow">
         <div>
-            <ProgressBar progress={progress}/>
+            {/* <ProgressBar progress={progress}/> */}
             {children}
         </div>
-        <CartSummary />
+        {/* <CartSummary /> */}
     </div>
 
     return result;

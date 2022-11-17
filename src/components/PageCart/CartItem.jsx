@@ -21,10 +21,10 @@ const CartItem = ({product}) => {
         }
     }
 
-    const handleRemoveItem = async (productID) => {
+    const handleRemoveItem = async () => {
         try {
 
-            const result = await removeItemFromCart(cart.id, productID);
+            const result = await removeItemFromCart(cart.id, product.id);
 
             if(result && result.response.ok) {
 
@@ -36,23 +36,23 @@ const CartItem = ({product}) => {
         }
     }
 
-    const result = <div className="display-flex">
+    const result = <div className="cart-item-container display-flex">
         
-        <div className="product-image">
+        <div className="cart-item-col product-image">
             <img src={product.image.url} alt={product.name}/>
         </div>
 
-        <div className="cart-item-info">
+        <div className="cart-item-col cart-item-info">
             <div>
                 {product.name}
             </div>
 
-            <div className="display-flex">
-                <button className="product-button" 
+            <div className="display-flex cart-item-buttons">
+                <button className="cart-item-button" 
                         type="button" 
-                        onClick={() => {handleRemoveItem(product.id)}}  
+                        onClick={handleRemoveItem}  
                     >
-                    <i className="fa-solid fa-circle-xmark"></i>
+                    <i className="fa-solid fa-trash-can"></i>
                 </button>
 
                 <input name={product.id} type="number" min="0" value={product.quantity} onChange={handleOnChange}/>
@@ -60,7 +60,7 @@ const CartItem = ({product}) => {
 
         </div>
        
-        <div className="bold">{`$${(product.price.raw * product.quantity).toFixed(2)}`}</div>
+        <div className="cart-item-col bold">{`$${(product.price.raw * product.quantity).toFixed(2)}`}</div>
 
         {/* <div className="product-container">
             <div className="product-info-container">

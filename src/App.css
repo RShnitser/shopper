@@ -72,6 +72,12 @@ input[type="radio"]:checked{
   font-weight: bolder;
 }
 
+.page-margin {
+  max-width: 750px;
+  margin: 10px auto;
+  padding: 20px;
+}
+
 .display-flex {
   display: flex;
 }
