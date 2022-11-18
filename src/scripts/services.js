@@ -203,9 +203,8 @@ export async function getCart(id) {
 
     const url = new URL("https://api.chec.io/v1/carts");
     const params = {id: id};
-
+   
     const result = await fetchGET(url, params);
-
     return result;
 }
 

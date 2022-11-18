@@ -46,9 +46,9 @@ const CartSummary = () => {
     //     shippingPrice = `$${cart.shippingMethod.price.toFixed(2)}`;
     // }
 
-    // if(cart.discounts.length > 0) {
-    //     discountPrice = `-$${cart.discount.toFixed(2)}`;
-    // }
+    if(cart.discount.amount_saved) {
+        discountPrice = cart.discount.amount_saved.formatted_with_symbol;
+    }
 
 
     if(currentPage === APP_PAGE.PAGE_CART)
@@ -57,8 +57,8 @@ const CartSummary = () => {
         discountForm = <form  className="border-bottom" onSubmit={handleOnSubmit}>
                     <div>Do you have a promo code?</div>
                     <div className="display-flex">
-                        <input className="promo" type="text" placeholder="Code" onChange={handleChange}/>
-                        <input className="promo bold" type="submit" value="APPLY"/>
+                        <input className="summary-promo" type="text" placeholder="Code" onChange={handleChange}/>
+                        <input className="summary-promo bold" type="submit" value="APPLY"/>
                     </div>
                     {/* {error} */}
                  </form>
@@ -129,26 +129,26 @@ const CartSummary = () => {
     //     </div>
     // }
 
-    const result =   <div className="summary cart-container padding shadow">
+    const result =   <div className="summary-container shadow">
         <h2 className="align-right border-bottom bold">Summary</h2>
         {discountForm}
         {count}
         {items}
         <div className="border-bottom"> 
-            <div className="h-container">
+            <div className="display-flex space-between">
                 <div>Cart Subtotal:</div>
                 <div className="bold">{cart.subtotal.formatted_with_symbol}</div>
             </div>
-            <div className="h-container">
+            <div className="display-flex space-between">
                 <div>Shipping & Handling:</div>
                 <div className="bold">{shippingPrice}</div>
             </div>
-            <div className="h-container">
+            <div className="display-flex space-between">
                 <div>Discount:</div>
                 <div className="summary-discount bold">{discountPrice}</div>
             </div>
-            <div className="h-container">
-                <div className="total">Cart Total:</div>
+            <div className="display-flex space-between">
+                <div className="bold">Cart Total:</div>
                 {/* <div className="red">{`$${cart.total.toFixed(2)}`}</div> */}
             </div>
         </div>

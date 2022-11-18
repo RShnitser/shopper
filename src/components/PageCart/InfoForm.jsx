@@ -1,15 +1,15 @@
 import React from "react";
 import CartSummary from "./CartSummary";
-import ProgressBar from "./ProgressBar";
+//import ProgressBar from "./ProgressBar";
 
 const InfoForm = ({progress, children}) => {
 
-    const result = <div className="display-flex page-margin shadow">
+    const result = <div className="info-flex page-margin shadow">
         <div>
             {/* <ProgressBar progress={progress}/> */}
             {children}
         </div>
-        {/* <CartSummary /> */}
+        <CartSummary />
     </div>
 
     return result;

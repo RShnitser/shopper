@@ -69,7 +69,7 @@ const PageCart = () => {
     }
 
 
-    const result = <InfoForm progress={1}>
+    const result = <InfoForm progress={0}>
         <div className="">
             {/* {mapHeaders()} */}
             {mapProducts()}

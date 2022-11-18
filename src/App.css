@@ -3,6 +3,7 @@
   --font-color: black;
   --red: #cc2c53;
   --blue: #415a92;
+  --green: #85b348;
   --light-gray: #f5f5f5;
   --gray: lightgray;
   --dark-gray: #545454;
@@ -73,7 +74,7 @@ input[type="radio"]:checked{
 }
 
 .page-margin {
-  max-width: 750px;
+  max-width: 850px;
   margin: 10px auto;
   padding: 20px;
 }
@@ -102,6 +103,10 @@ input[type="radio"]:checked{
 
 .grid-col-5 {
   grid-template-columns: repeat(5, auto);
+}
+
+.align-right {
+  text-align: right;
 }
 
 .error {

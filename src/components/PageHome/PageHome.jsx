@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useContext } from "react";
-import { createCart, fetchCategories, fetchProducts } from "../../scripts/services";
+import { fetchCategories, fetchProducts } from "../../scripts/services";
 import Pagination from "./Pagination";
 import DropDown, {DropDownItem} from "./DropDown";
 import Products, {ProductLarge} from "./Product";
@@ -63,18 +63,18 @@ const PageHome = () => {
             try {
                 const products = fetchProducts();
                 const categories = fetchCategories();
-                const cart = createCart();
+                //const cartParam = getCart(cart.id);
     
-                const [resProd, resCat, resCart] = await Promise.all([products, categories, cart]);
+                const [resProd, resCat] = await Promise.all([products, categories]);
              
-                if(resProd && resProd.response.ok && resCat && resCat.response.ok && resCart && resCart.response.ok) {
+                if(resProd && resProd.response.ok && resCat && resCat.response.ok) {
         
                     const prodData = resProd.data.products;
                     const pagination = resProd.data.pagination;
                     const catData = resCat.data;
-                    const cartData = resCart.data;
+                    //const cartData = resCart.data;
                     
-                    setCart(cartData);
+                    //setCart(cartData);
                     setProducts(prodData);
                     setPagination(pagination);
                     setCategories(catData);
@@ -92,7 +92,7 @@ const PageHome = () => {
 
         fetchData();
 
-    }, [setCart]);
+    }, []);
 
     useEffect(() => {
 

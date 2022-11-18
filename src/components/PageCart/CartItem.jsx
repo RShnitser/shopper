@@ -36,9 +36,9 @@ const CartItem = ({product}) => {
         }
     }
 
-    const result = <div className="cart-item-container display-flex">
+    const result = <div className="cart-item-container">
         
-        <div className="cart-item-col product-image">
+        <div className="cart-item-col cart-item-image">
             <img src={product.image.url} alt={product.name}/>
         </div>
 
@@ -60,7 +60,7 @@ const CartItem = ({product}) => {
 
         </div>
        
-        <div className="cart-item-col bold">{`$${(product.price.raw * product.quantity).toFixed(2)}`}</div>
+        <div className="cart-item-price cart-item-col bold">{`$${(product.price.raw * product.quantity).toFixed(2)}`}</div>
 
         {/* <div className="product-container">
             <div className="product-info-container">
