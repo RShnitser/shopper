@@ -45,6 +45,13 @@
     cursor: pointer;
 }
 
+.cart-flex {
+    width: 250px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
 .summary-container {
     padding: 0 20px;
     margin: 20px;

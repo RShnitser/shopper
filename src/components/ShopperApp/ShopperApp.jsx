@@ -5,6 +5,7 @@ import PageCreateAccount from "../PageLogin/PageCreateAccount";
 import PageLogin from "../PageLogin/PageLogin";
 import PageCart from "../PageCart/PageCart";
 import { createCart } from "../../scripts/services";
+import PageShipping from "../PageCart/PageShipping";
 
 export const AppContext = React.createContext({
     // page: APP_PAGE.PAGE_HOME,
@@ -75,6 +76,9 @@ const ShopperApp = () => {
             break;
             case APP_PAGE.PAGE_CART:
                 currentPage = <PageCart />
+            break;
+            case APP_PAGE.PAGE_SHIPPING:
+                currentPage = <PageShipping />
             break;
             default:
             break;
