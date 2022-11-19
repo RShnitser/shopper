@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useCallback } from "react";
-import { createCart, fetchCategories, fetchProducts } from "../../scripts/services";
+import React, { useState, useEffect, useCallback, useContext } from "react";
+import { fetchCategories, fetchProducts } from "../../scripts/services";
 import Pagination from "./Pagination";
 import DropDown, {DropDownItem} from "./DropDown";
 import Products, {ProductLarge} from "./Product";
@@ -12,12 +12,14 @@ const PageHome = () => {
 
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(false);
-    const [cart, setCart] = useState({});
+    //const [cart, setCart] = useState({});
     const [products, setProducts] = useState([]);
     const [pagination, setPagination] = useState({});
     const [categories, setCategories] = useState([]);
     const [params, setParams] = useState({query: "", category_id: "", page: ""});
     const [selectedProduct, selectProduct] = useState(null);
+
+    const {setAppPage, cart, setCart} = useContext(AppContext);
 
     const setProductData = (products, pagination) => {
         setProducts(products);
@@ -61,18 +63,18 @@ const PageHome = () => {
             try {
                 const products = fetchProducts();
                 const categories = fetchCategories();
-                const cart = createCart();
+                //const cartParam = getCart(cart.id);
     
-                const [resProd, resCat, resCart] = await Promise.all([products, categories, cart]);
+                const [resProd, resCat] = await Promise.all([products, categories]);
              
-                if(resProd && resProd.response.ok && resCat && resCat.response.ok && resCart && resCart.response.ok) {
+                if(resProd && resProd.response.ok && resCat && resCat.response.ok) {
         
                     const prodData = resProd.data.products;
                     const pagination = resProd.data.pagination;
                     const catData = resCat.data;
-                    const cartData = resCart.data;
+                    //const cartData = resCart.data;
                     
-                    setCart(cartData);
+                    //setCart(cartData);
                     setProducts(prodData);
                     setPagination(pagination);
                     setCategories(catData);
@@ -166,17 +168,20 @@ const PageHome = () => {
 
             <SearchBar categories={categories} query={params.query} handleOnChange={handleOnChange} handleOnSubmit={handleOnSubmit}/>
 
-            
-           <AppContext.Consumer>
+            <DropDown title={"Sign In"}>
+                <DropDownItem  label={"Sign In"} onClick={() => {setAppPage(APP_PAGE.PAGE_LOGIN)}}/>
+                <DropDownItem label={"Create Account"} onClick={() => {setAppPage(APP_PAGE.PAGE_CREATE)}}/>
+            </DropDown>
+           {/* <AppContext.Consumer>
                {({setAppPage}) => (
                 <DropDown title={"Sign In"}>
                     <DropDownItem  label={"Sign In"} onClick={() => {setAppPage(APP_PAGE.PAGE_LOGIN)}}/>
                     <DropDownItem label={"Create Account"} onClick={() => {setAppPage(APP_PAGE.PAGE_CREATE)}}/>
                 </DropDown>
                )}
-           </AppContext.Consumer>
+           </AppContext.Consumer> */}
 
-            <div className="cart-icon">
+            <div className="cart-icon" onClick={() => {setAppPage(APP_PAGE.PAGE_CART)}}>
                 <i className="fa-solid fa-cart-shopping"></i>
                 {itemCount}
             </div>

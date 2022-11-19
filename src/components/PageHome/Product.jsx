@@ -71,7 +71,7 @@ const Products = ({products, selectProduct}) => {
 
 const Product = ({product: {image, name, price}, onClick}) => {
 
- const result = <div className="product-item display-flex product-hover" onClick={onClick}>
+ const result = <div className="product-item page-margin display-flex product-hover" onClick={onClick}>
     <div className="product-image">
         <img src={image} alt="product" />
     </div>
