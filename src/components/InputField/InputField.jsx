@@ -49,15 +49,15 @@ const InputField = ({label, error, errorM, type, children, value, cardType, ...p
     if(type === "option")
     {
 
-        // input = <select className="input-option" defaultValue={0} {...props}>
-        //             <option disabled hidden value={0}>Select</option>
-        //             {
-        //                 children && children.map(function(data) {
-        //                     return(
-        //                         <option key={data} value={data}>{data}</option>
-        //                     );
-        //             })}
-        //         </select>
+        input = <select className="input-option" defaultValue={0} {...props}>
+                    <option disabled hidden value={0}>Select</option>
+                    {
+                        children && children.map(function(data) {
+                            return(
+                                <option key={data} value={data}>{data}</option>
+                            );
+                    })}
+                </select>
     }
     else {
         input =  <input className={inputClass} value={value} type={finalType}{...props}/>;

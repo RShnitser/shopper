@@ -5,7 +5,7 @@ import CartSummary from "./CartSummary";
 const InfoForm = ({children, button}) => {
 
     const result = <div className="info-flex page-margin shadow">
-        <div>
+        <div className="cart-flex">
             {/* <ProgressBar progress={progress}/> */}
             {children}
         </div>

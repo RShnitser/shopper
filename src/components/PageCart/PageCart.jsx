@@ -87,13 +87,13 @@ const PageCart = () => {
     />
 
     const result = <InfoForm button={nextButton}>
-        <div className="cart-flex">
+       
         {products}
         <Button 
-                text="HOME"
-                onClick={onHandleBack}
-            />
-        </div>
+            text="HOME"
+            onClick={onHandleBack}
+        />
+       
     </InfoForm>;
 
     return(result);

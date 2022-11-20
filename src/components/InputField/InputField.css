@@ -5,14 +5,14 @@
     width: 100%;
 }
 
-/* .input-option {
+.input-option {
     background-color: var(--light-gray);
     border: none;
     outline: none;
     padding: 10px 15px;
     font-weight: bold;
     color: var(--dark-gray);
-} */
+}
 
 /* .input-horizontal {
     display: grid;
