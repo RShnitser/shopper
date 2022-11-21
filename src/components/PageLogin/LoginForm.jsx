@@ -20,7 +20,7 @@ const Form = ({data, account, error, errorM, onSubmit, handleInput, handleBlur})
         
             {errorText}
             <form onSubmit={handleSubmit}>
-                <div className="display-grid grid-columns-3">
+                <div className="display-grid grid-col-3">
                     {data && data.map(function(data) {
 
                         return(

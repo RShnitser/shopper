@@ -51,9 +51,9 @@
     align-items: center;
 }*/
 
-.grid-columns-3 {
+/* .grid-columns-3 {
     grid-template-columns: repeat(3, auto);
-}
+} */
 
 /*.grid-columns-4 {
     grid-template-columns: repeat(4, auto);

@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useContext } from "react";
-import { INPUT_SHIPPING } from "../../scripts/constants";
+import { INPUT_SHIPPING, APP_PAGE } from "../../scripts/constants";
 import InfoForm from "./InfoForm";
 import InputField from "../InputField/InputField";
 import Button from "../Button/Button";
-import { fetchCheckoutToken } from "../../scripts/services";
+import { fetchCheckoutToken, fetchCountries, fetchRegions} from "../../scripts/services";
+import useInputValidations from "../../hooks/UseInputValidations";
 import { AppContext } from "../ShopperApp/ShopperApp";
 
 const INIT_SHIPPING = {
@@ -23,21 +24,73 @@ const PageShipping = () => {
     const [shipping, setShipping] = useState(INIT_SHIPPING);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState({});
+    const [errorM, setErrorM] = useState(undefined);
+    const [countries, setCountries] = useState([]);
+    const [regions, setRegions] = useState([]);
+    const [shippingMethods, setShippingMethods] = useState([]);
+    const [shippingMethod, setShippingMethod] = useState(null);
 
-    const {cart} = useContext(AppContext);
+    const {cart, setAppPage, setCheckout, setAppShipping} = useContext(AppContext);
+
+    const [handleInput, handleBlur, checkErrorBeforeSave] = useInputValidations(shipping, error, setShipping, setError, setErrorM);
 
     useEffect(() => {
         
         const fetchData = async () => {
 
             try {
-                // const checkoutTokenRes = await fetchCheckoutToken(cart.id)
+               
+                const resToken = await fetchCheckoutToken(cart.id)
                 // const categories = fetchCategories();
               
+                if(resToken && resToken.response.ok) {
+
+                    const tokenData = resToken.data;
+                    setCheckout(tokenData);
+                    setShippingMethods(tokenData.shipping_methods);
+                    setShippingMethod(tokenData.shipping_methods[0].id);
+
+                    const countryRes = await fetchCountries(resToken.data.id);
+
+                    if(countryRes && countryRes.response.ok) {
+                        //console.log(countryRes.data);
+                        const countryData = countryRes.data.countries;
+                        
+                        const countryArray = [];
+                        for(const key of Object.keys(countryData)) {
+                            // console.log(countryData[key]);
+                            //countryArray.push(countryData[key])
+                            countryArray.push(key);
+                        }
+
+                        setCountries(countryArray);
+
+                        const regionRes = await fetchRegions(resToken.data.id, countryArray[0]);
+
+                        if(regionRes && regionRes.response.ok) {
+                            
+                            const regionData = regionRes.data.subdivisions;
+                        
+                            const regionArray = [];
+                            for(const key of Object.keys(regionData)) {
+                            
+                                regionArray.push(key);
+                            }
     
-             
-             
-                // if(resProd && resProd.response.ok && resCat && resCat.response.ok) {
+                            setRegions(regionArray);
+
+                            setShipping( (prevData) => {
+                                return { 
+                                    ...prevData, 
+                                    country: countryArray[0],
+                                    state: regionArray[0],
+                                }
+                            });
+
+
+                            setLoading(false);
+                        }
+                    }
         
                 //     const prodData = resProd.data.products;
                 //     const pagination = resProd.data.pagination;
@@ -47,7 +100,7 @@ const PageShipping = () => {
                 //     setPagination(pagination);
                 //     setCategories(catData);
                 //     setLoading(false);
-                // }
+                }
                 // else {
                 //     setLoading(false);
                 // }
@@ -55,12 +108,44 @@ const PageShipping = () => {
             catch(error) {
                 setLoading(false);
                 setError(true);
+                //console.log(error);
             }
         }
 
         fetchData();
 
-    }, []);
+    }, [cart.id]);
+
+    const onHandleBack = () => {
+        setAppPage(APP_PAGE.PAGE_CART);
+    }
+
+    const handleShippingMethod = ({target: {value}}) => {
+
+        //const {updateShippingMethod} = this.props;
+       
+        //updateShippingMethod(value);
+        
+        // this.setState({
+        //     shippingMethod: value,
+        // });
+        setShippingMethod(value);
+    }
+
+    const handleOnSubmit = () => {
+
+        //const {setData} = this.props;
+
+        const errorCheck = checkErrorBeforeSave();
+
+        if(!errorCheck) {
+            //setData(STATE_DATA.STATE_SHIPPING, this.state.shipping);
+            setAppShipping(shipping);
+            setAppPage(APP_PAGE.PAGE_PAYMENT);
+            //setData(STATE_DATA.STATE_PAGE, PAGE_TYPE.PAGE_PAYMENT);
+        }
+
+    }
 
     const mapData = (data) => {
 
@@ -76,8 +161,8 @@ const PageShipping = () => {
                 value={shipping[item.name] || ""}
                 errorM={error[`${item.name}Error`]}
                 {...item}
-                //onChange={onChange}
-                //onBlur={onBlur}
+                onChange={handleInput}
+                onBlur={handleBlur}
             />;
 
             return (result);
@@ -86,35 +171,88 @@ const PageShipping = () => {
         return labels;
     }
 
-    const countries = ["USA"];
-    const regions = ["NY"];
+    const mapShippingMethods = () => {
 
-    const shipData = [
-        {label: "Address Title", type: "text", name: INPUT_SHIPPING.SHIPPING_TITLE},
-        {label: "Name-Surname", type: "text", name: INPUT_SHIPPING.SHIPPING_NAME},
-        {label: "Your Address", type: "text", name: INPUT_SHIPPING.SHIPPING_ADDRESS},
-        {label: "Zip Code", type: "text", name: INPUT_SHIPPING.SHIPPING_ZIP},
-        {label: "Country", type: "option", name: INPUT_SHIPPING.SHIPPING_COUNTRY, children: countries},
-        {label: "City", type: "text", name: INPUT_SHIPPING.SHIPPING_CITY},
-        {label: "State", type: "option", name: INPUT_SHIPPING.SHIPPING_STATE, children: regions},
-        {label: "Telephone", type: "tel", name: INPUT_SHIPPING.SHIPPING_PHONE},
-        // {label: "Cell Phone", type: "tel", name: INPUT_SHIPPING.SHIPPING_CELL},
-    ];
+        //const {shippingMethod} = this.state;
+        
+        //const onChange = this.handleShippingMethod;
+        
+        const result = shippingMethods && shippingMethods.map(function(item) {
 
-    const nextButton = <Button 
-        text="CHECKOUT"
-        //onClick={onHandleNextPage}
-    />
+            // let link = <div></div>;
+            // if(index + 1 === array.length){
+            //     link =  
+            //     <div>
+            //         <a href="#!">View Shipping Details</a>        
+            //     </div>
+            // }
+            return(
+                <React.Fragment key={item.id}>
+                    <label>
+                        <input 
+                            type="radio"
+                            name="shipping-method"
+                            value={item.id}
+                            checked={shippingMethod === item.id}
+                            onChange={handleShippingMethod}
+                        />
+                    </label>
+                    <div className="label-text">{item.description}</div>
+                    <div className="label-text">{item.price.formatted_with_symbol}</div>
+                    {/* {link} */}
+                </React.Fragment>
+            );
+        })
 
-    const result = <InfoForm button={nextButton}>
-       
-    {mapData(shipData)}
-    <Button 
-        text="HOME"
-        //onClick={onHandleBack}
-    />
-  
-    </InfoForm>;
+        return result;
+    }
+
+    //const countries = ["USA"];
+    
+    let result = null;
+    
+    if(loading) {
+        result = <div>Loading...</div>;
+    }
+    // else if(error) {
+        //     result = <div>Error</div>;
+        // }
+        else {
+            //const regions = ["NY"];
+        
+            const shipData = [
+                {label: "Address Title", type: "text", name: INPUT_SHIPPING.SHIPPING_TITLE},
+                {label: "Name-Surname", type: "text", name: INPUT_SHIPPING.SHIPPING_NAME},
+                {label: "Your Address", type: "text", name: INPUT_SHIPPING.SHIPPING_ADDRESS},
+                {label: "Zip Code", type: "text", name: INPUT_SHIPPING.SHIPPING_ZIP},
+                {label: "Country", type: "option", name: INPUT_SHIPPING.SHIPPING_COUNTRY, children: countries},
+                {label: "City", type: "text", name: INPUT_SHIPPING.SHIPPING_CITY},
+                {label: "State", type: "option", name: INPUT_SHIPPING.SHIPPING_STATE, children: regions},
+                {label: "Telephone", type: "tel", name: INPUT_SHIPPING.SHIPPING_PHONE},
+                // {label: "Cell Phone", type: "tel", name: INPUT_SHIPPING.SHIPPING_CELL},
+            ];
+
+            const nextButton = <Button 
+            text="CHECKOUT"
+            onClick={handleOnSubmit}
+        />
+
+        result = <InfoForm button={nextButton}>
+        
+        <div className="display-grid grid-col-3">
+            {mapData(shipData)}
+        </div>
+        <h2 className="bold">Shipping Method</h2>
+        <div className="display-grid grid-col-3">
+            {mapShippingMethods()}
+        </div>
+        <Button 
+            text="HOME"
+            onClick={onHandleBack}
+        />
+    
+        </InfoForm>;
+    }
 
     return(result);
 

@@ -101,6 +101,15 @@ input[type="radio"]:checked{
   grid-column: span 3;
 }
 
+.grid-col-3 {
+  grid-template-columns: repeat(3, auto);
+}
+
+.grid-col-4 {
+  grid-template-columns: repeat(4, auto);
+  /* grid-template-columns: 1fr 1fr 1fr auto; */
+}
+
 .grid-col-5 {
   grid-template-columns: repeat(5, auto);
 }
