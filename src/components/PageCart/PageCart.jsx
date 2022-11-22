@@ -58,6 +58,12 @@ const PageCart = () => {
         setAppPage(APP_PAGE.PAGE_HOME);
     }
 
+    const onHandleNextPage = () => {
+        if(cart.line_items.length) {
+            setAppPage(APP_PAGE.PAGE_SHIPPING);
+        }
+    }
+
     const mapProducts = () => {
 
         const result = cart.line_items && cart.line_items.map(function(product) {
@@ -69,15 +75,25 @@ const PageCart = () => {
     }
 
 
-    const result = <InfoForm progress={0}>
-        <div className="">
-            {/* {mapHeaders()} */}
-            {mapProducts()}
-            <Button 
-                text="HOME"
-                onClick={onHandleBack}
-            />
-        </div>
+    let products = <div>No items in cart</div>;
+
+    if(cart.line_items.length) {
+        products = mapProducts()
+    }
+           
+    const nextButton = <Button 
+        text="CHECKOUT"
+        onClick={onHandleNextPage}
+    />
+
+    const result = <InfoForm progress={0} button={nextButton}>
+       
+        {products}
+        <Button 
+            text="HOME"
+            onClick={onHandleBack}
+        />
+       
     </InfoForm>;
 
     return(result);

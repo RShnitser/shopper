@@ -301,7 +301,7 @@ export async function removeItemFromCart(cartId, productID) {
 
             const url = `https://api.chec.io/v1/carts/${cartId}/items/${productID}`;
 
-            console.log(url);
+            //console.log(url);
 
             const headers = {
                 "X-Authorization": COMMERCE_API,
@@ -369,6 +369,87 @@ export async function applyDiscount(cartId, discount) {
         }
     });
 }
+
+export async function fetchCheckoutToken(cartId) {
+    // return new Promise(async function(success, failure) {
+    //     try {
+
+    //         const url = `https://api.chec.io/v1/checkouts/${cartId}`;
+
+    //         const params = {
+    //             type: cartId,
+    //         };
+
+    //         for(const key of Object.keys(params)) {
+    //             url.searchParams.append(key, params[key]);
+    //         }
+
+    //         const headers = {
+    //             "X-Authorization": COMMERCE_API,
+    //             "Accept": "application/json",
+    //             "Content-Type": "application/json",
+    //         };
+
+    //         const response = await fetch(url, {
+    //             method: "GET", 
+    //             headers: headers,
+    //         });
+            
+    //         if(response.ok) {
+    
+    //             const data = await response.json();
+    
+    //             success({response, data});
+    //         }
+    //         else {
+    //             failure({error: "invalid http request"});
+    //         }
+        
+    //     }
+    //     catch(error) {
+    //         failure(error);
+    //     }
+    // });
+
+    const url = new URL(`https://api.chec.io/v1/checkouts/${cartId}`);
+
+    const params = {
+        type: "cart",
+    };
+    
+    const result = await fetchGET(url, params);
+
+    return result;
+}
+
+export async function fetchCountries(checkoutToken) {
+
+    const url = `https://api.chec.io/v1/services/locale/${checkoutToken}/countries`;
+   
+    const result = await fetchGET(url);
+    return result;
+}
+
+export async function fetchRegions(checkoutToken, countryCode) {
+
+    const url = `https://api.chec.io/v1/services/locale/${checkoutToken}/countries/${countryCode}/subdivisions`;
+   
+    const result = await fetchGET(url);
+    return result;
+}
+
+export async function getShippingMethods(checkoutToken, countryCode, regionCode) {
+
+    const url = `https://api.chec.io/v1/services/locale/${checkoutToken}/helper/shipping_options}`;
+    const params = {
+        country: countryCode,
+        region: regionCode
+    };
+   
+    const result = await fetchGET(url, params);
+    return result;
+}
+
 
 async function fetchGET(url, params=[]) {
     return new Promise(async function(success, failure) {

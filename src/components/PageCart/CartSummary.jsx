@@ -3,7 +3,7 @@ import { AppContext } from "../ShopperApp/ShopperApp";
 import { APP_PAGE } from "../../scripts/constants";
 import { applyDiscount } from "../../scripts/services";
 
-const CartSummary = () => {
+const CartSummary = ({button}) => {
 
     const [discount, setDiscount] = useState("");
 
@@ -155,7 +155,7 @@ const CartSummary = () => {
         {address}
         {shipmentType}
         {paymentInfo}
-        {/* {button} */}
+        {button}
     </div>
 
     return(result);

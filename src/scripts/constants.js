@@ -22,6 +22,27 @@ export const INPUT_LOGIN = {
     LOGIN_ZIP: "zip",
 };
 
+export const INPUT_SHIPPING = {
+    SHIPPING_TITLE: "title",
+    SHIPPING_NAME: "name",
+    SHIPPING_ADDRESS: "address",
+    SHIPPING_ZIP: "zip",
+    SHIPPING_COUNTRY: "country",
+    SHIPPING_CITY: "city",
+    SHIPPING_STATE: "state",
+    //SHIPPING_CELL: "cell",
+    SHIPPING_PHONE: "phone",
+};
+
+export const INPUT_PAYMENT = {
+    PAYMENT_CARDHOLDER: "cardHolder",
+    PAYMENT_NUMBER: "cardNumber",
+    PAYMENT_EXPIRE_M: "expire_m",
+    PAYMENT_EXPIRE_Y: "expire_y",
+    PAYMENT_CVV: "cvv"
+};
+
+
 export const CARD = [
     "VISA",
     "MASTER_CARD",

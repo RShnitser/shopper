@@ -1,17 +1,17 @@
 //import React from "react"
 
-import { INPUT_LOGIN } from "../scripts/constants";
-import { validateEmail, validatePassword, validateSecurityCode } from "../scripts/validations";
+import { INPUT_LOGIN, INPUT_SHIPPING } from "../scripts/constants";
+import { validateEmail, validatePassword, validateSecurityCode, validatePhoneNumber } from "../scripts/validations";
 
 const useInputValidations = (data, error, setData, setError, setErrorM) => {
 
     const handleInput = ({target: {name, value}}) => {
       
         let result = value;
-        if(name === INPUT_LOGIN.LOGIN_ZIP) {
+        if(name === INPUT_LOGIN.LOGIN_ZIP || name === INPUT_SHIPPING.SHIPPING_PHONE || name === INPUT_SHIPPING.SHIPPING_ZIP) {
             result = value.replace(/\D/g, "");
         }
-        else if(name === INPUT_LOGIN.LOGIN_FIRST_NAME || name === INPUT_LOGIN.LOGIN_LAST_NAME) {
+        else if(name === INPUT_LOGIN.LOGIN_FIRST_NAME || name === INPUT_LOGIN.LOGIN_LAST_NAME || name === INPUT_SHIPPING.SHIPPING_NAME) {
             result = value.replace(/[^A-Z]/ig, "");
         }
 
@@ -61,6 +61,16 @@ const useInputValidations = (data, error, setData, setError, setErrorM) => {
             break;
 
             case INPUT_LOGIN.LOGIN_ZIP:
+                errorText = validateSecurityCode(5, value);
+            break;
+
+            case INPUT_SHIPPING.SHIPPING_PHONE:
+                errorText = validatePhoneNumber(value);
+            break;
+            case INPUT_SHIPPING.SHIPPING_CELL:
+                errorText = validatePhoneNumber(value);
+            break;
+            case INPUT_SHIPPING.SHIPPING_ZIP:
                 errorText = validateSecurityCode(5, value);
             break;
            
