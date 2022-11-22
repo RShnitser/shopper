@@ -218,24 +218,24 @@ const PageShipping = () => {
     // else if(error) {
         //     result = <div>Error</div>;
         // }
-        else {
+    else {
             //const regions = ["NY"];
-        
-            const shipData = [
-                {label: "Address Title", type: "text", name: INPUT_SHIPPING.SHIPPING_TITLE},
-                {label: "Name-Surname", type: "text", name: INPUT_SHIPPING.SHIPPING_NAME},
-                {label: "Your Address", type: "text", name: INPUT_SHIPPING.SHIPPING_ADDRESS},
-                {label: "Zip Code", type: "text", name: INPUT_SHIPPING.SHIPPING_ZIP},
-                {label: "Country", type: "option", name: INPUT_SHIPPING.SHIPPING_COUNTRY, children: countries},
-                {label: "City", type: "text", name: INPUT_SHIPPING.SHIPPING_CITY},
-                {label: "State", type: "option", name: INPUT_SHIPPING.SHIPPING_STATE, children: regions},
-                {label: "Telephone", type: "tel", name: INPUT_SHIPPING.SHIPPING_PHONE},
-                // {label: "Cell Phone", type: "tel", name: INPUT_SHIPPING.SHIPPING_CELL},
-            ];
+    
+        const shipData = [
+            {label: "Address Title", type: "text", name: INPUT_SHIPPING.SHIPPING_TITLE},
+            {label: "Name-Surname", type: "text", name: INPUT_SHIPPING.SHIPPING_NAME},
+            {label: "Your Address", type: "text", name: INPUT_SHIPPING.SHIPPING_ADDRESS},
+            {label: "Zip Code", type: "text", name: INPUT_SHIPPING.SHIPPING_ZIP},
+            {label: "Country", type: "option", name: INPUT_SHIPPING.SHIPPING_COUNTRY, children: countries},
+            {label: "City", type: "text", name: INPUT_SHIPPING.SHIPPING_CITY},
+            {label: "State", type: "option", name: INPUT_SHIPPING.SHIPPING_STATE, children: regions},
+            {label: "Telephone", type: "tel", name: INPUT_SHIPPING.SHIPPING_PHONE},
+            // {label: "Cell Phone", type: "tel", name: INPUT_SHIPPING.SHIPPING_CELL},
+        ];
 
-            const nextButton = <Button 
-            text="CHECKOUT"
-            onClick={handleOnSubmit}
+        const nextButton = <Button 
+        text="CHECKOUT"
+        onClick={handleOnSubmit}
         />
 
         result = <InfoForm progress={1} button={nextButton}>
