@@ -3,6 +3,7 @@ import { INPUT_SHIPPING, APP_PAGE } from "../../scripts/constants";
 import InfoForm from "./InfoForm";
 import InputField from "../InputField/InputField";
 import Button from "../Button/Button";
+import ProgressBar from "./ProgressBar";
 import { fetchCheckoutToken, fetchCountries, fetchRegions} from "../../scripts/services";
 import useInputValidations from "../../hooks/UseInputValidations";
 import { AppContext } from "../ShopperApp/ShopperApp";
@@ -237,8 +238,9 @@ const PageShipping = () => {
             onClick={handleOnSubmit}
         />
 
-        result = <InfoForm button={nextButton}>
+        result = <InfoForm progress={1} button={nextButton}>
         
+        <ProgressBar progress={1}/>
         <div className="display-grid grid-col-3">
             {mapData(shipData)}
         </div>

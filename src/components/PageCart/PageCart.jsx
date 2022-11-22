@@ -86,7 +86,7 @@ const PageCart = () => {
         onClick={onHandleNextPage}
     />
 
-    const result = <InfoForm button={nextButton}>
+    const result = <InfoForm progress={0} button={nextButton}>
        
         {products}
         <Button 
