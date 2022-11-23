@@ -31,7 +31,7 @@ const PageShipping = () => {
     const [shippingMethods, setShippingMethods] = useState([]);
     const [shippingMethod, setShippingMethod] = useState(null);
 
-    const {cart, setAppPage, setCheckout, setAppShipping} = useContext(AppContext);
+    const {cart, setAppPage, setCheckout, setAppShipping, setAppShippingMethod} = useContext(AppContext);
 
     const [handleInput, handleBlur, checkErrorBeforeSave] = useInputValidations(shipping, error, setShipping, setError, setErrorM);
 
@@ -49,7 +49,7 @@ const PageShipping = () => {
                     const tokenData = resToken.data;
                     setCheckout(tokenData);
                     setShippingMethods(tokenData.shipping_methods);
-                    setShippingMethod(tokenData.shipping_methods[0].id);
+                    setShippingMethod(tokenData.shipping_methods[0]);
 
                     const countryRes = await fetchCountries(resToken.data.id);
 
@@ -115,7 +115,11 @@ const PageShipping = () => {
 
         fetchData();
 
-    }, [cart.id]);
+    }, [cart.id, setCheckout]);
+
+    useEffect(() => {
+        setAppShippingMethod(shippingMethod);
+    }, [shippingMethod, setAppShippingMethod])
 
     const onHandleBack = () => {
         setAppPage(APP_PAGE.PAGE_CART);
@@ -124,13 +128,18 @@ const PageShipping = () => {
     const handleShippingMethod = ({target: {value}}) => {
 
         //const {updateShippingMethod} = this.props;
+        const result = shippingMethods.find(function(method) {
+            return method.id === value;
+        });
        
         //updateShippingMethod(value);
+
         
         // this.setState({
         //     shippingMethod: value,
         // });
-        setShippingMethod(value);
+        //console.log(value);
+        setShippingMethod(result);
     }
 
     const handleOnSubmit = () => {
@@ -142,6 +151,7 @@ const PageShipping = () => {
         if(!errorCheck) {
             //setData(STATE_DATA.STATE_SHIPPING, this.state.shipping);
             setAppShipping(shipping);
+            setAppShippingMethod(shippingMethod);
             setAppPage(APP_PAGE.PAGE_PAYMENT);
             //setData(STATE_DATA.STATE_PAGE, PAGE_TYPE.PAGE_PAYMENT);
         }
@@ -179,7 +189,7 @@ const PageShipping = () => {
         //const onChange = this.handleShippingMethod;
         
         const result = shippingMethods && shippingMethods.map(function(item) {
-
+            //console.log(item);
             // let link = <div></div>;
             // if(index + 1 === array.length){
             //     link =  
@@ -194,7 +204,7 @@ const PageShipping = () => {
                             type="radio"
                             name="shipping-method"
                             value={item.id}
-                            checked={shippingMethod === item.id}
+                            checked={shippingMethod.id === item.id}
                             onChange={handleShippingMethod}
                         />
                     </label>

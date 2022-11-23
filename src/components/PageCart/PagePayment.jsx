@@ -61,7 +61,7 @@ const PagePayment = () => {
         return result;
     }
 
-    const mapExp = (inputData, error) => {
+    const mapExp = (inputData) => {
         
         //const onChange = this.handleOnChange;
         //const onBlur = this.handleBlur;

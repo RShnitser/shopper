@@ -51,8 +51,10 @@
     background-color: var(--dark-gray);
     z-index: -1;
     top: 30%;
-    left: -5vw;
-    width: 10vw;
+    /* left: -5vw; */
+    left: -50%;
+    /* width: 10vw; */
+    width: 100%;
 
 }
 
