@@ -23,6 +23,7 @@ const ShopperApp = () => {
     const [cart, setCart] = useState({});
     const [checkout, setCheckout] = useState({});
     const [appShippingMethod, setAppShippingMethod] = useState({});
+    const [appPayment, setAppPayment] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(false);
 
@@ -105,6 +106,8 @@ const ShopperApp = () => {
                 setCheckout: setCheckout,
                 appShippingMethod: appShippingMethod,
                 setAppShippingMethod: setAppShippingMethod,
+                appPayment: appPayment,
+                setAppPayment: setAppPayment,
             }}
         >
             {currentPage}

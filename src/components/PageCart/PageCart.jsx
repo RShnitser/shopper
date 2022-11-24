@@ -81,18 +81,20 @@ const PageCart = () => {
         products = mapProducts()
     }
            
-    const nextButton = <Button 
+    const buttonNext = <Button 
         text="CHECKOUT"
         onClick={onHandleNextPage}
     />
 
-    const result = <InfoForm progress={0} button={nextButton}>
+    const buttonBack =  <Button 
+        text="HOME"
+        onClick={onHandleBack}
+    />
+
+    const result = <InfoForm progress={0} buttonBack={buttonBack} buttonNext={buttonNext}>
        
         {products}
-        <Button 
-            text="HOME"
-            onClick={onHandleBack}
-        />
+       
        
     </InfoForm>;
 

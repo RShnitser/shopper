@@ -1,10 +1,10 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import InfoForm from "./InfoForm";
 import Button from "../Button/Button";
-import ProgressBar from "./ProgressBar";
 import InputField from "../InputField/InputField";
-import { INPUT_PAYMENT } from "../../scripts/constants";
+import { INPUT_PAYMENT, APP_PAGE } from "../../scripts/constants";
 import useInputValidations from "../../hooks/UseInputValidations";
+import { AppContext } from "../ShopperApp/ShopperApp";
 
 const INIT_PAYMENT = {
     
@@ -24,12 +24,21 @@ const PagePayment = () => {
 
     const [handleInput, handleBlur, checkErrorBeforeSave] = useInputValidations(payment, error, setPayment, setError, setErrorM);
 
-    const onHandleBack = () => {
+    const {setAppPage, setAppPayment} = useContext(AppContext);
 
+    const onHandleBack = () => {
+        setAppPage(APP_PAGE.PAGE_SHIPPING);
     }
 
     const handleOnSubmit = () => {
 
+        const errorCheck = checkErrorBeforeSave();
+
+        if(!errorCheck) {
+           
+            setAppPayment(payment);
+            setAppPage(APP_PAGE.PAGE_CONFIRMATION);
+        }
     }
 
     const mapData = (data) => {
@@ -120,14 +129,19 @@ const PagePayment = () => {
         {label: "CVV", type: "text", name: INPUT_PAYMENT.PAYMENT_CVV, maxLength: 4},
     ]
 
-    const nextButton = <Button 
-    text="CHECKOUT"
-    onClick={handleOnSubmit}
+    const buttonNext = <Button 
+        text="CHECKOUT"
+        onClick={handleOnSubmit}
     />
 
-    const result = <InfoForm progress={1} button={nextButton}>
+    const buttonBack = <Button 
+        text="HOME"
+        onClick={onHandleBack}
+    />
+
+    const result = <InfoForm progress={2} buttonBack={buttonBack} buttonNext={buttonNext}>
     
-    <ProgressBar progress={2}/>
+    {/* <ProgressBar progress={2}/> */}
 
     <div className="display-grid grid-col-3">
         {mapData(paymentData1)}
@@ -135,10 +149,7 @@ const PagePayment = () => {
         {mapData(paymentData3)}
     </div>
    
-    <Button 
-        text="HOME"
-        onClick={onHandleBack}
-    />
+   
 
     </InfoForm>;
 

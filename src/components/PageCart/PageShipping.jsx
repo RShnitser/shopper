@@ -3,7 +3,6 @@ import { INPUT_SHIPPING, APP_PAGE } from "../../scripts/constants";
 import InfoForm from "./InfoForm";
 import InputField from "../InputField/InputField";
 import Button from "../Button/Button";
-import ProgressBar from "./ProgressBar";
 import { fetchCheckoutToken, fetchCountries, fetchRegions} from "../../scripts/services";
 import useInputValidations from "../../hooks/UseInputValidations";
 import { AppContext } from "../ShopperApp/ShopperApp";
@@ -243,14 +242,19 @@ const PageShipping = () => {
             // {label: "Cell Phone", type: "tel", name: INPUT_SHIPPING.SHIPPING_CELL},
         ];
 
-        const nextButton = <Button 
-        text="CHECKOUT"
-        onClick={handleOnSubmit}
+        const buttonNext = <Button 
+            text="CHECKOUT"
+            onClick={handleOnSubmit}
         />
 
-        result = <InfoForm progress={1} button={nextButton}>
+        const buttonBack =  <Button 
+            text="HOME"
+            onClick={onHandleBack}
+        />
+
+        result = <InfoForm progress={1} buttonBack={buttonBack} buttonNext={buttonNext}>
         
-        <ProgressBar progress={1}/>
+        {/* <ProgressBar progress={1}/> */}
         <div className="display-grid grid-col-3">
             {mapData(shipData)}
         </div>
@@ -258,10 +262,7 @@ const PageShipping = () => {
         <div className="display-grid grid-col-3">
             {mapShippingMethods()}
         </div>
-        <Button 
-            text="HOME"
-            onClick={onHandleBack}
-        />
+       
     
         </InfoForm>;
     }
