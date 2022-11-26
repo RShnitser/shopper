@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-//import { CARD, CARD_ICON } from "../../scripts/constants";
+import { CARD, CARD_ICON } from "../../scripts/constants";
 import "./InputField.css";
 
 const InputField = ({label, error, errorM, type, children, value, cardType, ...props }) => {
@@ -38,12 +38,12 @@ const InputField = ({label, error, errorM, type, children, value, cardType, ...p
     }
 
     if(type === "card") {
-        // finalType = "text";
-        // if((!error || !error.cardError) && CARD.includes(cardType)) {
-        //     cardIcon = <div className="card-icon card-icon-margin">
-        //         <img src={CARD_ICON[cardType]} alt="card"/>
-        //     </div>
-        // }
+        finalType = "text";
+        if((!error || !error.cardError) && CARD.includes(cardType)) {
+            cardIcon = <div className="card-icon card-icon-margin">
+                <img src={CARD_ICON[cardType]} alt="card"/>
+            </div>
+        }
     }
 
     if(type === "option")
