@@ -54,6 +54,7 @@
 }
 
 .summary-container {
+    /* width: 330px; */
     padding: 0 20px;
     margin: 20px;
 }
@@ -69,6 +70,23 @@
 .summary-discount {
     color: var(--green);
 }
+
+.summary-image {
+    margin: 10px 0;
+    width: 50px;
+}
+
+.summary-item {
+    text-transform: capitalize;
+    font-size: .9rem;
+    margin-bottom: auto;
+}
+
+/* .summary-item-price {
+    display: flex;
+    align-items: flex-end;
+} */
+
 
 @media screen and (max-width: 790px) {
 

@@ -3,7 +3,6 @@ import { INPUT_SHIPPING, APP_PAGE } from "../../scripts/constants";
 import InfoForm from "./InfoForm";
 import InputField from "../InputField/InputField";
 import Button from "../Button/Button";
-import ProgressBar from "./ProgressBar";
 import { fetchCheckoutToken, fetchCountries, fetchRegions} from "../../scripts/services";
 import useInputValidations from "../../hooks/UseInputValidations";
 import { AppContext } from "../ShopperApp/ShopperApp";
@@ -31,7 +30,7 @@ const PageShipping = () => {
     const [shippingMethods, setShippingMethods] = useState([]);
     const [shippingMethod, setShippingMethod] = useState(null);
 
-    const {cart, setAppPage, setCheckout, setAppShipping} = useContext(AppContext);
+    const {cart, setAppPage, setCheckout, setAppShipping, setAppShippingMethod} = useContext(AppContext);
 
     const [handleInput, handleBlur, checkErrorBeforeSave] = useInputValidations(shipping, error, setShipping, setError, setErrorM);
 
@@ -49,7 +48,7 @@ const PageShipping = () => {
                     const tokenData = resToken.data;
                     setCheckout(tokenData);
                     setShippingMethods(tokenData.shipping_methods);
-                    setShippingMethod(tokenData.shipping_methods[0].id);
+                    setShippingMethod(tokenData.shipping_methods[0]);
 
                     const countryRes = await fetchCountries(resToken.data.id);
 
@@ -115,7 +114,11 @@ const PageShipping = () => {
 
         fetchData();
 
-    }, [cart.id]);
+    }, [cart.id, setCheckout]);
+
+    useEffect(() => {
+        setAppShippingMethod(shippingMethod);
+    }, [shippingMethod, setAppShippingMethod])
 
     const onHandleBack = () => {
         setAppPage(APP_PAGE.PAGE_CART);
@@ -124,13 +127,18 @@ const PageShipping = () => {
     const handleShippingMethod = ({target: {value}}) => {
 
         //const {updateShippingMethod} = this.props;
+        const result = shippingMethods.find(function(method) {
+            return method.id === value;
+        });
        
         //updateShippingMethod(value);
+
         
         // this.setState({
         //     shippingMethod: value,
         // });
-        setShippingMethod(value);
+        //console.log(value);
+        setShippingMethod(result);
     }
 
     const handleOnSubmit = () => {
@@ -142,6 +150,7 @@ const PageShipping = () => {
         if(!errorCheck) {
             //setData(STATE_DATA.STATE_SHIPPING, this.state.shipping);
             setAppShipping(shipping);
+            setAppShippingMethod(shippingMethod);
             setAppPage(APP_PAGE.PAGE_PAYMENT);
             //setData(STATE_DATA.STATE_PAGE, PAGE_TYPE.PAGE_PAYMENT);
         }
@@ -179,7 +188,7 @@ const PageShipping = () => {
         //const onChange = this.handleShippingMethod;
         
         const result = shippingMethods && shippingMethods.map(function(item) {
-
+            //console.log(item);
             // let link = <div></div>;
             // if(index + 1 === array.length){
             //     link =  
@@ -194,7 +203,7 @@ const PageShipping = () => {
                             type="radio"
                             name="shipping-method"
                             value={item.id}
-                            checked={shippingMethod === item.id}
+                            checked={shippingMethod.id === item.id}
                             onChange={handleShippingMethod}
                         />
                     </label>
@@ -218,29 +227,34 @@ const PageShipping = () => {
     // else if(error) {
         //     result = <div>Error</div>;
         // }
-        else {
+    else {
             //const regions = ["NY"];
-        
-            const shipData = [
-                {label: "Address Title", type: "text", name: INPUT_SHIPPING.SHIPPING_TITLE},
-                {label: "Name-Surname", type: "text", name: INPUT_SHIPPING.SHIPPING_NAME},
-                {label: "Your Address", type: "text", name: INPUT_SHIPPING.SHIPPING_ADDRESS},
-                {label: "Zip Code", type: "text", name: INPUT_SHIPPING.SHIPPING_ZIP},
-                {label: "Country", type: "option", name: INPUT_SHIPPING.SHIPPING_COUNTRY, children: countries},
-                {label: "City", type: "text", name: INPUT_SHIPPING.SHIPPING_CITY},
-                {label: "State", type: "option", name: INPUT_SHIPPING.SHIPPING_STATE, children: regions},
-                {label: "Telephone", type: "tel", name: INPUT_SHIPPING.SHIPPING_PHONE},
-                // {label: "Cell Phone", type: "tel", name: INPUT_SHIPPING.SHIPPING_CELL},
-            ];
+    
+        const shipData = [
+            {label: "Address Title", type: "text", name: INPUT_SHIPPING.SHIPPING_TITLE},
+            {label: "Name-Surname", type: "text", name: INPUT_SHIPPING.SHIPPING_NAME},
+            {label: "Your Address", type: "text", name: INPUT_SHIPPING.SHIPPING_ADDRESS},
+            {label: "Zip Code", type: "text", name: INPUT_SHIPPING.SHIPPING_ZIP},
+            {label: "Country", type: "option", name: INPUT_SHIPPING.SHIPPING_COUNTRY, children: countries},
+            {label: "City", type: "text", name: INPUT_SHIPPING.SHIPPING_CITY},
+            {label: "State", type: "option", name: INPUT_SHIPPING.SHIPPING_STATE, children: regions},
+            {label: "Telephone", type: "tel", name: INPUT_SHIPPING.SHIPPING_PHONE},
+            // {label: "Cell Phone", type: "tel", name: INPUT_SHIPPING.SHIPPING_CELL},
+        ];
 
-            const nextButton = <Button 
+        const buttonNext = <Button 
             text="CHECKOUT"
             onClick={handleOnSubmit}
         />
 
-        result = <InfoForm progress={1} button={nextButton}>
+        const buttonBack =  <Button 
+            text="HOME"
+            onClick={onHandleBack}
+        />
+
+        result = <InfoForm progress={1} buttonBack={buttonBack} buttonNext={buttonNext}>
         
-        <ProgressBar progress={1}/>
+        {/* <ProgressBar progress={1}/> */}
         <div className="display-grid grid-col-3">
             {mapData(shipData)}
         </div>
@@ -248,10 +262,7 @@ const PageShipping = () => {
         <div className="display-grid grid-col-3">
             {mapShippingMethods()}
         </div>
-        <Button 
-            text="HOME"
-            onClick={onHandleBack}
-        />
+       
     
         </InfoForm>;
     }

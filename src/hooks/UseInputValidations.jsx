@@ -1,20 +1,50 @@
 //import React from "react"
 
-import { INPUT_LOGIN, INPUT_SHIPPING } from "../scripts/constants";
-import { validateEmail, validatePassword, validateSecurityCode, validatePhoneNumber } from "../scripts/validations";
+import { INPUT_LOGIN, INPUT_SHIPPING, INPUT_PAYMENT } from "../scripts/constants";
+import { validateEmail, validatePassword, validateSecurityCode, validatePhoneNumber, validateExpirationDate, validateCreditCard } from "../scripts/validations";
+//import { useContext } from "react";
+//import { AppContext } from "../components/ShopperApp/ShopperApp";
 
 const useInputValidations = (data, error, setData, setError, setErrorM) => {
+
+    //const {appPayment, setAppPayment} = useContext(AppContext);
 
     const handleInput = ({target: {name, value}}) => {
       
         let result = value;
-        if(name === INPUT_LOGIN.LOGIN_ZIP || name === INPUT_SHIPPING.SHIPPING_PHONE || name === INPUT_SHIPPING.SHIPPING_ZIP) {
+        if(name === INPUT_LOGIN.LOGIN_ZIP || name === INPUT_SHIPPING.SHIPPING_PHONE || name === INPUT_SHIPPING.SHIPPING_ZIP || name === INPUT_PAYMENT.PAYMENT_CVV) {
             result = value.replace(/\D/g, "");
         }
-        else if(name === INPUT_LOGIN.LOGIN_FIRST_NAME || name === INPUT_LOGIN.LOGIN_LAST_NAME || name === INPUT_SHIPPING.SHIPPING_NAME) {
+        else if(name === INPUT_LOGIN.LOGIN_FIRST_NAME || name === INPUT_LOGIN.LOGIN_LAST_NAME || name === INPUT_SHIPPING.SHIPPING_NAME || name === INPUT_PAYMENT.PAYMENT_CARDHOLDER) {
             result = value.replace(/[^A-Z]/ig, "");
         }
-
+        else if(name === INPUT_PAYMENT.PAYMENT_NUMBER) {
+            const numOnly =  value.replace(/\D/g, "");
+            let mask = numOnly.split(" ").join("");
+        
+            if(mask.length) {
+                mask = mask.match(new RegExp(".{1,4}", "g")).join(" ");
+                // setData((prevState) => ({
+                //     ...prevState,
+                //     [name]: mask,
+                // }));
+                // setData( (prevData) => {
+                //     return { ...prevData, [name]: mask,}
+                // });
+                result = mask;
+            }
+            else {
+                // setData((prevState) => ({
+                //     ...prevState,
+                //     [name]: "",
+                // }));
+                // setData( (prevData) => {
+                //     return { ...prevData, [name]: "",}
+                // });
+                result = "";
+            }
+        }
+      
         setData( (prevData) => {
             return { ...prevData, [name]: result,}
         });
@@ -29,6 +59,10 @@ const useInputValidations = (data, error, setData, setError, setErrorM) => {
 
         let errorKey = `${name}Error`;
 
+        if(name === "expire_m" || name === "expire_y") {
+            errorKey = "expireError";
+        }
+
         if(errorText) {
             errorValue[errorKey] = errorText;
         }
@@ -37,6 +71,25 @@ const useInputValidations = (data, error, setData, setError, setErrorM) => {
         }
 
        setError(errorValue);
+    }
+
+    const findCardType = (cardNumber) => {
+
+        const regexPattern = {
+            MASTER_CARD: /^5[1-5][0-9]{1,}|^2[2-7][0-9]{1,}$/,
+            VISA: /^4[0-9]{2,}/,
+            AMERICAN_EXPRESS: /^3[47][0-9]{5,}$/,
+            DISCOVER: /^6(?:011|5[0-9]{2})[0-9]{3,}$/,
+        };
+
+        for(const card in regexPattern) {
+            if(cardNumber.replace(/[^\d]/g, "").match(regexPattern[card])) {
+                return card;
+            }
+
+        }
+
+        return "";
     }
 
     const handleValidations = (type, value) => {
@@ -73,7 +126,36 @@ const useInputValidations = (data, error, setData, setError, setErrorM) => {
             case INPUT_SHIPPING.SHIPPING_ZIP:
                 errorText = validateSecurityCode(5, value);
             break;
-           
+
+            case INPUT_PAYMENT.PAYMENT_NUMBER:
+                // this.setState(function(prevState){
+                //     return({
+                //         payment: {
+                //             ...prevState.payment,
+                //             cardType: findCardType(value),
+                //         }
+                //     });
+                // });
+                setData((prevPayment) => {
+                   return({
+                        ...prevPayment,
+                        cardType: findCardType(value)
+                   })
+                });
+             
+                errorText = validateCreditCard(value);
+            break;
+            case INPUT_PAYMENT.PAYMENT_EXPIRE_M:
+                errorText = validateExpirationDate(data.expire_y, data.expire_m);
+            break;
+            case INPUT_PAYMENT.PAYMENT_EXPIRE_Y:
+               
+                errorText = validateExpirationDate(data.expire_y, data.expire_m);
+            break;
+            case INPUT_PAYMENT.PAYMENT_CVV:
+                errorText = validateSecurityCode(3, value);
+            break;
+
             default:
             break;
         }
@@ -89,6 +171,10 @@ const useInputValidations = (data, error, setData, setError, setErrorM) => {
         for(const key of Object.keys(data)) {
             
             let errorKey = `${key}Error`;
+
+            if(key === "expire_m" || key === "expire_y") {
+                errorKey = "expireError";
+            }
             
             if(!data[key].length) {
 

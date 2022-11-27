@@ -1,13 +1,13 @@
 import React, { useState, useContext } from "react";
 import { AppContext } from "../ShopperApp/ShopperApp";
-import { APP_PAGE } from "../../scripts/constants";
+import { APP_PAGE, INPUT_SHIPPING } from "../../scripts/constants";
 import { applyDiscount } from "../../scripts/services";
 
 const CartSummary = ({button}) => {
 
     const [discount, setDiscount] = useState("");
 
-    const {currentPage, cart, setCart} = useContext(AppContext);
+    const {currentPage, cart, shipping, setCart, appShippingMethod} = useContext(AppContext);
 
     //const quantity = cart.totalItems;
 
@@ -31,6 +31,22 @@ const CartSummary = ({button}) => {
     const handleChange = ({target: {value}}) => {
         setDiscount(value);
     }
+
+    const calculateTotal = () => {
+        let result = cart.subtotal.raw;
+
+        if(appShippingMethod.price) {
+            result += appShippingMethod.price.raw;
+        }
+        if(cart.discount.amount_saved) {
+
+            result -= cart.discount.amount_saved.raw;
+        }
+
+        result = result < 0 ? 0 : result;
+
+        return result;
+    }
       
     let discountForm = <></>;
     let discountPrice = "-";
@@ -41,10 +57,10 @@ const CartSummary = ({button}) => {
     let shipmentType =<></>;
     let shippingPrice = "-";
     
-    // if(cart.shippingMethod && page !== APP_PAGE.PAGE_CART) {
+    if(appShippingMethod.price && currentPage !== APP_PAGE.PAGE_CART) {
 
-    //     shippingPrice = `$${cart.shippingMethod.price.toFixed(2)}`;
-    // }
+        shippingPrice = appShippingMethod.price.formatted_with_symbol;
+    }
 
     if(cart.discount.amount_saved) {
         discountPrice = cart.discount.amount_saved.formatted_with_symbol;
@@ -64,57 +80,57 @@ const CartSummary = ({button}) => {
                  </form>
     }
 
-    // if(page === PAGE_TYPE.PAGE_SHIPPING || page === PAGE_TYPE.PAGE_PAYMENT)
-    // {
-    //     count = <div className="align-right border-bottom"><strong>{`${quantity} items `}</strong>in your bag</div>
-    // }
+    if(currentPage === APP_PAGE.PAGE_SHIPPING || currentPage === APP_PAGE.PAGE_PAYMENT)
+    {
+        count = <div className="align-right border-bottom"><strong>{`${cart.total_items} items `}</strong>in your bag</div>
+    }
 
-    // if(page !== PAGE_TYPE.PAGE_CART) {
+    if(currentPage !== APP_PAGE.PAGE_CART) {
        
-    //     items = cart && cart.products.map(function(product) {
-         
-    //         return(
-    //             <div className="h-container" key={product.name}>
-    //                 <div className="summary-image">
-    //                     <img src={product.image} alt={product.name}/>
-    //                 </div>
-    //                 <div>
-    //                     <div>
-    //                         <div className="product-bold">{product.name}</div>
-    //                     </div>
-    //                     <div className="h-container">
-    //                         <div className="product-info summary-item">
-    //                             <div>Color:</div>
-    //                             <div>{product.color}</div>
-    //                             <div>Size:</div>
-    //                             <div>{product.size}</div>
-    //                             <div>Quantity:</div>
-    //                             <div>{product.quantity}</div>
-    //                         </div>
-    //                         <div className="summary-item summary-item-price bold">{`$${(product.price * product.quantity).toFixed(2)}`}</div>
-    //                     </div>
-    //                 </div>
-    //             </div>
-    //         );
-    //     });
-    // }
+        items = cart && cart.line_items.map(function(product) {
+            return(
+                <div className="display-flex" key={product.name}>
+                    <div className="summary-image">
+                        <img src={product.image.url} alt={product.name}/>
+                    </div>
+                    <div className="display-grid grid-col-2 summary-item">
+                        {/* <div>Color:</div>
+                        <div>{product.color}</div>
+                        <div>Size:</div>
+                        <div>{product.size}</div> */}
+                        <div>Quantity:</div>
+                        <div>{product.quantity}</div>
+                        <div>Price:</div>
+                        <div className="summary-item bold">{`$${(product.price.raw * product.quantity).toFixed(2)}`}</div>
+                    </div>
+                    {/* <div>
+                    </div> */}
+                    {/* <div>
+                        <div className="product-bold">{product.name}</div>
+                    </div> */}
+                    {/* <div className="display-flex space-between">
+                    </div> */}
+                </div>
+            );
+        });
+    }
 
-    // if(page === PAGE_TYPE.PAGE_PAYMENT || page === PAGE_TYPE.PAGE_CONFIRMATION) {
-    //     address = <div className="border-bottom">
-    //                 <h2 className="bold">Shipment Address</h2>
-    //                 <div>{shipping[INPUT_SHIPPING.SHIPPING_NAME]}</div>
-    //                 <div>{shipping[INPUT_SHIPPING.SHIPPING_ADDRESS]}</div>
-    //                 <div>{shipping[INPUT_SHIPPING.SHIPPING_ZIP]}</div>
-    //                 <div>{shipping[INPUT_SHIPPING.SHIPPING_CITY]}</div>
-    //             </div>
+    if(currentPage === APP_PAGE.PAGE_PAYMENT || currentPage === APP_PAGE.PAGE_CONFIRMATION) {
+        address = <div className="border-bottom">
+                    <h2 className="bold">Shipment Address</h2>
+                    <div>{shipping[INPUT_SHIPPING.SHIPPING_NAME]}</div>
+                    <div>{shipping[INPUT_SHIPPING.SHIPPING_ADDRESS]}</div>
+                    <div>{shipping[INPUT_SHIPPING.SHIPPING_ZIP]}</div>
+                    <div>{shipping[INPUT_SHIPPING.SHIPPING_CITY]}</div>
+                </div>
 
-    //     shipmentType = <>
-    //                          <h2 className="bold">Shipment Method</h2>
-    //                          <div className="bold">{cart.shippingMethod.name}</div>
-    //                          <div>{cart.shippingMethod.description}</div>
-    //                     </>
+        shipmentType = <>
+                             <h2 className="bold">Shipment Method</h2>
+                             {/* <div className="bold">{appShippingMethod.name}</div> */}
+                             <div>{appShippingMethod.description}</div>
+                        </>
 
-    // }
+    }
 
     // if(page === PAGE_TYPE.PAGE_CONFIRMATION) {
 
@@ -149,7 +165,7 @@ const CartSummary = ({button}) => {
             </div>
             <div className="display-flex space-between">
                 <div className="bold">Cart Total:</div>
-                {/* <div className="red">{`$${cart.total.toFixed(2)}`}</div> */}
+                <div className="red">{`$${calculateTotal().toFixed(2)}`}</div>
             </div>
         </div>
         {address}
