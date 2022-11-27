@@ -39,6 +39,7 @@ const InputField = ({label, error, errorM, type, children, value, cardType, ...p
 
     if(type === "card") {
         finalType = "text";
+        //cardType = "MASTER_CARD";
         if((!error || !error.cardError) && CARD.includes(cardType)) {
             cardIcon = <div className="card-icon card-icon-margin">
                 <img src={CARD_ICON[cardType]} alt="card"/>

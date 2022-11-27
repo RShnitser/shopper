@@ -139,7 +139,7 @@ const useInputValidations = (data, error, setData, setError, setErrorM) => {
                 setData((prevPayment) => {
                    return({
                         ...prevPayment,
-                        cartType: findCardType(value)
+                        cardType: findCardType(value)
                    })
                 });
              

@@ -50,6 +50,8 @@ const PagePayment = () => {
 
         let result = data && data.map(function(item) {
 
+            //console.log(payment);
+
             return(<InputField 
                 key={item.label} 
                 label={item.label}
