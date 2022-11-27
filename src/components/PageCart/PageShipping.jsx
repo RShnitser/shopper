@@ -255,6 +255,7 @@ const PageShipping = () => {
         result = <InfoForm progress={1} buttonBack={buttonBack} buttonNext={buttonNext}>
         
         {/* <ProgressBar progress={1}/> */}
+        <h2 className="bold">Shipping Information</h2>
         <div className="display-grid grid-col-3">
             {mapData(shipData)}
         </div>

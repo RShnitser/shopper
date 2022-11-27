@@ -1,13 +1,13 @@
 import React, { useState, useContext } from "react";
 import { AppContext } from "../ShopperApp/ShopperApp";
-import { APP_PAGE, INPUT_SHIPPING } from "../../scripts/constants";
+import { APP_PAGE, INPUT_SHIPPING, INPUT_PAYMENT, CARD_ICON } from "../../scripts/constants";
 import { applyDiscount } from "../../scripts/services";
 
 const CartSummary = ({button}) => {
 
     const [discount, setDiscount] = useState("");
 
-    const {currentPage, cart, shipping, setCart, appShippingMethod} = useContext(AppContext);
+    const {currentPage, cart, shipping, payment, setCart, appShippingMethod} = useContext(AppContext);
 
     //const quantity = cart.totalItems;
 
@@ -132,18 +132,18 @@ const CartSummary = ({button}) => {
 
     }
 
-    // if(page === PAGE_TYPE.PAGE_CONFIRMATION) {
+    if(currentPage === APP_PAGE.PAGE_CONFIRMATION) {
 
-    //     paymentInfo = <div className="border-bottom">
-    //         <h2 className="bold">Payment</h2>
-    //             <div className="input-flex">
-    //                 <div className="card-icon">
-    //                     <img src={CARD_ICON[payment.cardType]} alt="card"/>
-    //                 </div>
-    //                 <div>{`**** ${payment[INPUT_PAYMENT.PAYMENT_NUMBER].slice(-4)}`}</div>
-    //             </div>
-    //     </div>
-    // }
+        paymentInfo = <div className="border-bottom">
+            <h2 className="bold">Payment</h2>
+                <div className="display-flex">
+                    <div className="card-icon">
+                        <img src={CARD_ICON[payment.cardType]} alt="card"/>
+                    </div>
+                    <div>{`**** ${payment[INPUT_PAYMENT.PAYMENT_NUMBER].slice(-4)}`}</div>
+                </div>
+        </div>
+    }
 
     const result =   <div className="summary-container shadow">
         <h2 className="align-right border-bottom bold">Summary</h2>

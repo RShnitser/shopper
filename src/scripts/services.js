@@ -450,6 +450,46 @@ export async function getShippingMethods(checkoutToken, countryCode, regionCode)
     return result;
 }
 
+export async function captureOrder(checkoutID, orderData) {
+    return new Promise(async function(success, failure) {
+        try {
+
+            const url = `https://api.chec.io/v1/checkouts/${checkoutID}`;
+
+            // const body = {
+            //     id: productID,
+            //     quantity: productQuantity,
+            // }
+
+            const headers = {
+                "X-Authorization": COMMERCE_API,
+                "Accept": "application/json",
+                "Content-Type": "application/json",
+            };
+
+            const response = await fetch(url, {
+                method: "POST", 
+                headers: headers,
+                body: JSON.stringify(orderData),
+            });
+            
+            if(response.ok) {
+    
+                const data = await response.json();
+    
+                success({response, data});
+            }
+            else {
+                failure({error: "invalid http request"});
+            }
+        
+        }
+        catch(error) {
+            failure(error);
+        }
+    });
+}
+
 
 async function fetchGET(url, params=[]) {
     return new Promise(async function(success, failure) {

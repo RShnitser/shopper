@@ -24,7 +24,63 @@ const PagePayment = () => {
 
     const [handleInput, handleBlur, checkErrorBeforeSave] = useInputValidations(payment, error, setPayment, setError, setErrorM);
 
-    const {setAppPage, setAppPayment} = useContext(AppContext);
+    const {cart, account, shipping, appShippingMethod, setAppPage, setAppPayment} = useContext(AppContext);
+
+    const sanitizedLineItems = (lineItems) => {
+        return lineItems.reduce((data, lineItem) => {
+          const item = data;
+          let variantData = null;
+          if (lineItem.selected_options.length) {
+            variantData = {
+              [lineItem.selected_options[0].group_id]: lineItem.selected_options[0].option_id,
+            };
+          }
+          item[lineItem.id] = {
+            quantity: lineItem.quantity,
+            variants: variantData,
+          };
+        return item;
+        }, {});
+    }
+      
+    const handleCaptureCheckout = () => {
+
+        const orderData = {
+            line_items: sanitizedLineItems(cart.line_items),
+
+            customer: {
+              firstname: account.firstName,
+              lastname: account.lastName,
+              email: account.email,
+            },
+
+            shipping: {
+              name: shipping.title,
+              street: shipping.address,
+              town_city: shipping.city,
+              county_state: shipping.state,
+              postal_zip_code: shipping.zip,
+              country: shipping.country,
+            },
+
+            fulfillment: {
+              shipping_method: appShippingMethod.id
+            },
+
+            payment: {
+              gateway: "test_gateway",
+              card: {
+                number: payment.cardNumber,
+                expiry_month: payment.expire_m,
+                expiry_year: payment.expire_y,
+                cvc: payment.ccv,
+                postal_zip_code: shipping.zip,
+              },
+            },
+        };
+
+        
+    }
 
     const onHandleBack = () => {
         setAppPage(APP_PAGE.PAGE_SHIPPING);
@@ -144,6 +200,8 @@ const PagePayment = () => {
     const result = <InfoForm progress={2} buttonBack={buttonBack} buttonNext={buttonNext}>
     
     {/* <ProgressBar progress={2}/> */}
+
+    <h2 className="bold">Payment Information</h2>
 
     <div className="display-grid grid-col-3">
         {mapData(paymentData1)}

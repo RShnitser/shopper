@@ -7,6 +7,7 @@ import PageCart from "../PageCart/PageCart";
 import { createCart } from "../../scripts/services";
 import PageShipping from "../PageCart/PageShipping";
 import PagePayment from "../PageCart/PagePayment";
+import PageConfirmation from "../PageCart/PageConfirmation";
 
 export const AppContext = React.createContext({
     // page: APP_PAGE.PAGE_HOME,
@@ -88,6 +89,9 @@ const ShopperApp = () => {
             case APP_PAGE.PAGE_PAYMENT:
                 currentPage = <PagePayment />
             break;
+            case APP_PAGE.PAGE_CONFIRMATION:
+                currentPage = <PageConfirmation />
+            break;
             default:
             break;
         }
@@ -106,7 +110,7 @@ const ShopperApp = () => {
                 setCheckout: setCheckout,
                 appShippingMethod: appShippingMethod,
                 setAppShippingMethod: setAppShippingMethod,
-                appPayment: appPayment,
+                payment: appPayment,
                 setAppPayment: setAppPayment,
             }}
         >
