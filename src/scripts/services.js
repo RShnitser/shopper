@@ -6,7 +6,7 @@
 const COMMERCE_API = process.env.REACT_APP_CHEC_PUBLIC_KEY;
 
 let nextId = 2;
-let currentUserID = null;
+//let currentUserID = null;
 
 const users = [
     {
@@ -22,19 +22,54 @@ const users = [
 
 export function loginUser(email, password) {
 
-    let result = false;
+    // let result = false;
   
-    const userIndex = users.findIndex(function(user) {
-        return user.email === email && user.password === password;
+    // const userIndex = users.findIndex(function(user) {
+    //     return user.email === email && user.password === password;
+    // });
+
+    // if(userIndex > -1)
+    // {
+    //     currentUserID = users[userIndex].id;
+    //     result = true;
+    // }
+
+    // return result;
+
+    return new Promise(async function(success, failure) {
+        try {
+
+            const userIndex = users.findIndex(function(user) {
+                return user.email === email && user.password === password;
+            });
+
+            if(userIndex > -1)
+            {
+                //currentUserID = users[userIndex].id;
+                const data = users[userIndex];
+            
+
+                //const json = await response.json();
+    
+                // const data = json.data.map(function(category) {
+                //     return ({
+                //         id: category.id,
+                //         name: category.name,
+                //     });
+                // });
+    
+                success(data);
+            }
+            else {
+                failure({error: "invalid email or password"});
+            }
+        
+        }
+        catch(error) {
+            failure(error);
+        }
     });
 
-    if(userIndex > -1)
-    {
-        currentUserID = users[userIndex].id;
-        result = true;
-    }
-
-    return result;
 }
 
 function findUserByEmail(email) {

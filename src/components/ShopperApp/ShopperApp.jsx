@@ -101,7 +101,7 @@ const ShopperApp = () => {
                 currentPage: page, 
                 setAppPage: setPage,
                 account: account,
-                setAccount: setAccount,
+                setAppAccount: setAccount,
                 shipping: appShipping,
                 setAppShipping: setAppShipping,
                 cart: cart,

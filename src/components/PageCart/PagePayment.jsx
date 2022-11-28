@@ -5,6 +5,7 @@ import InputField from "../InputField/InputField";
 import { INPUT_PAYMENT, APP_PAGE } from "../../scripts/constants";
 import useInputValidations from "../../hooks/UseInputValidations";
 import { AppContext } from "../ShopperApp/ShopperApp";
+import { captureOrder } from "../../scripts/services";
 
 const INIT_PAYMENT = {
     
@@ -24,29 +25,30 @@ const PagePayment = () => {
 
     const [handleInput, handleBlur, checkErrorBeforeSave] = useInputValidations(payment, error, setPayment, setError, setErrorM);
 
-    const {cart, account, shipping, appShippingMethod, setAppPage, setAppPayment} = useContext(AppContext);
+    const {cart, account, checkout, shipping, appShippingMethod, setAppPage, setAppPayment} = useContext(AppContext);
 
-    const sanitizedLineItems = (lineItems) => {
-        return lineItems.reduce((data, lineItem) => {
-          const item = data;
-          let variantData = null;
-          if (lineItem.selected_options.length) {
-            variantData = {
-              [lineItem.selected_options[0].group_id]: lineItem.selected_options[0].option_id,
-            };
-          }
-          item[lineItem.id] = {
-            quantity: lineItem.quantity,
-            variants: variantData,
-          };
-        return item;
-        }, {});
-    }
+    // const sanitizedLineItems = (lineItems) => {
+    //     return lineItems.reduce((data, lineItem) => {
+    //       const item = data;
+    //       let variantData = null;
+    //       if (lineItem.selected_options.length) {
+    //         variantData = {
+    //           [lineItem.selected_options[0].group_id]: lineItem.selected_options[0].option_id,
+    //         };
+    //       }
+    //       item[lineItem.id] = {
+    //         quantity: lineItem.quantity,
+    //         variants: variantData,
+    //       };
+    //     return item;
+    //     }, {});
+    // }
       
-    const handleCaptureCheckout = () => {
+    const handleCaptureCheckout = async () => {
 
         const orderData = {
-            line_items: sanitizedLineItems(cart.line_items),
+            //line_items: sanitizedLineItems(cart.line_items),
+            line_items: checkout.line_items,
 
             customer: {
               firstname: account.firstName,
@@ -70,30 +72,55 @@ const PagePayment = () => {
             payment: {
               gateway: "test_gateway",
               card: {
-                number: payment.cardNumber,
+                //number: payment.cardNumber,
+                number: "4242424242424242",
                 expiry_month: payment.expire_m,
                 expiry_year: payment.expire_y,
-                cvc: payment.ccv,
+                cvc: payment.cvv,
                 postal_zip_code: shipping.zip,
               },
             },
         };
 
+        //console.log(orderData);
+
+        try {
+            
+            const resOrder = await captureOrder(checkout.id, orderData);
+
+           
         
+            if(resOrder && resOrder.response.ok) {
+    
+              
+                const orderData = resOrder.data;
+                
+               console.log(orderData);
+            }
+            else {
+                
+            }
+        }
+        catch(error) {
+           
+            //console.log(error);
+            //setError(true);
+        }
     }
 
     const onHandleBack = () => {
         setAppPage(APP_PAGE.PAGE_SHIPPING);
     }
 
-    const handleOnSubmit = () => {
+    const handleOnSubmit = async () => {
 
         const errorCheck = checkErrorBeforeSave();
 
         if(!errorCheck) {
            
             setAppPayment(payment);
-            setAppPage(APP_PAGE.PAGE_CONFIRMATION);
+            //setAppPage(APP_PAGE.PAGE_CONFIRMATION);
+            await handleCaptureCheckout();
         }
     }
 

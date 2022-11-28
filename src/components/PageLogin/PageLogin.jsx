@@ -17,24 +17,41 @@ const PageLogin = () => {
     const [errorM, setErrorM] = useState(undefined);
     const [error, setError] = useState({});
 
-    const {setAppPage} = useContext(AppContext);
+    const {setAppPage, setAppAccount} = useContext(AppContext);
 
     const [handleInput, handleBlur, checkErrorBeforeSave] = useInputValidations(account, error, setAccount, setError, setErrorM);
 
-    const handleOnSubmit = ({email, password}) => {
+    const handleOnSubmit = async ({email, password}) => {
        
         //const {setData} = this.props;
         const errorCheck = checkErrorBeforeSave();
 
         if(!errorCheck) {
 
-            if(loginUser(email, password))
-            {
-                //setData(STATE_DATA.STATE_PAGE, PAGE_TYPE.PAGE_CART);
-                setAppPage(APP_PAGE.PAGE_CART);
+            // if(loginUser(email, password))
+            // {
+            //     setAppAccount();
+            //     setAppPage(APP_PAGE.PAGE_CART);
 
+            // }
+            // else {
+            //     setErrorM("Invalid Username or Password");
+            // }
+            try {
+            
+                const accountData = await loginUser(email, password);
+    
+                if(accountData) {
+        
+                    setAppAccount(accountData);
+                    setAppPage(APP_PAGE.PAGE_CART);
+                   
+                }
+                // else {
+                //     setLoading(false);
+                // }
             }
-            else {
+            catch(error) {
                 setErrorM("Invalid Username or Password");
             }
         }
