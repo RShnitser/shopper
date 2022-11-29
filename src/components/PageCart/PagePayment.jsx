@@ -20,12 +20,13 @@ const INIT_PAYMENT = {
 const PagePayment = () => {
 
     const [payment, setPayment] = useState(INIT_PAYMENT);
+    const [loading, setLoading] = useState(false);
     const [error, setError] = useState({});
     const [errorM, setErrorM] = useState(undefined);
 
     const [handleInput, handleBlur, checkErrorBeforeSave] = useInputValidations(payment, error, setPayment, setError, setErrorM);
 
-    const {cart, account, checkout, shipping, appShippingMethod, setAppPage, setAppPayment} = useContext(AppContext);
+    const {account, checkout, shipping, appShippingMethod, setAppPage, setAppPayment, setOrder} = useContext(AppContext);
 
     // const sanitizedLineItems = (lineItems) => {
     //     return lineItems.reduce((data, lineItem) => {
@@ -72,8 +73,8 @@ const PagePayment = () => {
             payment: {
               gateway: "test_gateway",
               card: {
-                //number: payment.cardNumber,
-                number: "4242424242424242",
+                number: payment.cardNumber,
+                //number: "4242424242424242",
                 expiry_month: payment.expire_m,
                 expiry_year: payment.expire_y,
                 cvc: payment.cvv,
@@ -82,10 +83,9 @@ const PagePayment = () => {
             },
         };
 
-        //console.log(orderData);
-
         try {
             
+            setLoading(true);
             const resOrder = await captureOrder(checkout.id, orderData);
 
            
@@ -94,16 +94,20 @@ const PagePayment = () => {
     
               
                 const orderData = resOrder.data;
+                //console.log(orderData);
+                setOrder(orderData);
+                setAppPage(APP_PAGE.PAGE_CONFIRMATION);
+                setLoading(false)
                 
-               console.log(orderData);
             }
             else {
-                
+                setLoading(false);
             }
         }
         catch(error) {
-           
-            //console.log(error);
+           setLoading(false);
+           setErrorM("Error processing payment");
+           console.error(error);
             //setError(true);
         }
     }
@@ -224,21 +228,30 @@ const PagePayment = () => {
         onClick={onHandleBack}
     />
 
-    const result = <InfoForm progress={2} buttonBack={buttonBack} buttonNext={buttonNext}>
+    let result = null;
     
-    {/* <ProgressBar progress={2}/> */}
+    if(loading) {
+        result = <div>Processing Payment...</div>;
+    }
+    // else if(error) {
+        //     result = <div>Error</div>;
+        // }
+    else {
 
-    <h2 className="bold">Payment Information</h2>
+        result = <InfoForm progress={2} buttonBack={buttonBack} buttonNext={buttonNext}>
+        
+    
 
-    <div className="display-grid grid-col-3">
-        {mapData(paymentData1)}
-        {mapExp(paymentData2)}
-        {mapData(paymentData3)}
-    </div>
+        <h2 className="bold">Payment Information</h2>
+
+        <div className="display-grid grid-col-3">
+            {mapData(paymentData1)}
+            {mapExp(paymentData2)}
+            {mapData(paymentData3)}
+        </div>
    
-   
-
     </InfoForm>;
+    }
 
     return(result);
 }

@@ -19,7 +19,7 @@ const PageHome = () => {
     const [params, setParams] = useState({query: "", category_id: "", page: ""});
     const [selectedProduct, selectProduct] = useState(null);
 
-    const {setAppPage, cart, setCart} = useContext(AppContext);
+    const {setAppPage, cart, setCart, account, setAppAccount} = useContext(AppContext);
 
     const setProductData = (products, pagination) => {
         setProducts(products);
@@ -162,16 +162,27 @@ const PageHome = () => {
         
         // const setPage = React.useContext(PageContext);
 
+        let dropDown = null;
+
+        if(account) {
+            dropDown = <DropDown title="Account">
+                  <DropDownItem  label="Sign Out" onClick={() => {setAppAccount(null)}}/>
+            </DropDown>
+        }
+        else {
+            dropDown = <DropDown title="Account">
+                <DropDownItem  label="Sign In" onClick={() => {setAppPage(APP_PAGE.PAGE_LOGIN)}}/>
+                <DropDownItem label="Create Account" onClick={() => {setAppPage(APP_PAGE.PAGE_CREATE)}}/>
+            </DropDown>
+        }
+
         result =  <div >
         <div className="nav-container display-flex">
             <div className="nav-title">Shopper</div>
 
             <SearchBar categories={categories} query={params.query} handleOnChange={handleOnChange} handleOnSubmit={handleOnSubmit}/>
 
-            <DropDown title={"Sign In"}>
-                <DropDownItem  label={"Sign In"} onClick={() => {setAppPage(APP_PAGE.PAGE_LOGIN)}}/>
-                <DropDownItem label={"Create Account"} onClick={() => {setAppPage(APP_PAGE.PAGE_CREATE)}}/>
-            </DropDown>
+            {dropDown}
            {/* <AppContext.Consumer>
                {({setAppPage}) => (
                 <DropDown title={"Sign In"}>

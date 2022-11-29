@@ -44,7 +44,7 @@ const PageLogin = () => {
                 if(accountData) {
         
                     setAppAccount(accountData);
-                    setAppPage(APP_PAGE.PAGE_CART);
+                    setAppPage(APP_PAGE.PAGE_HOME);
                    
                 }
                 // else {

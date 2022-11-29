@@ -134,7 +134,7 @@ const CartSummary = ({button}) => {
 
     if(currentPage === APP_PAGE.PAGE_CONFIRMATION) {
 
-        paymentInfo = <div className="border-bottom">
+        paymentInfo = <div>
             <h2 className="bold">Payment</h2>
                 <div className="display-flex">
                     <div className="card-icon">

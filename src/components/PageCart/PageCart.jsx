@@ -12,7 +12,7 @@ const PageCart = () => {
     //const [error, setError] = useState(false);
     //onst [cart, setCart] = useState({});
 
-    const {setAppPage, cart} = useContext(AppContext);
+    const {setAppPage, cart, account} = useContext(AppContext);
 
     // useEffect(() => {
         
@@ -59,8 +59,11 @@ const PageCart = () => {
     }
 
     const onHandleNextPage = () => {
-        if(cart.line_items.length) {
+        if(cart.line_items.length && account) {
             setAppPage(APP_PAGE.PAGE_SHIPPING);
+        }
+        else if(cart.line_items.length && !account) {
+            setAppPage(APP_PAGE.PAGE_LOGIN);
         }
     }
 

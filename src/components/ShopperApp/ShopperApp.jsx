@@ -25,12 +25,15 @@ const ShopperApp = () => {
     const [checkout, setCheckout] = useState({});
     const [appShippingMethod, setAppShippingMethod] = useState({});
     const [appPayment, setAppPayment] = useState(null);
+    const [order, setOrder] = useState({});
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(false);
 
+   
+
     useEffect(() => {
         
-        const fetchData = async () => {
+        const fetchCartData = async () => {
 
             try {
             
@@ -56,9 +59,9 @@ const ShopperApp = () => {
             }
         }
 
-        fetchData();
+        fetchCartData();
 
-    }, [setCart]);
+    }, []);
     
     let currentPage = null;
     let result = null;
@@ -112,6 +115,8 @@ const ShopperApp = () => {
                 setAppShippingMethod: setAppShippingMethod,
                 payment: appPayment,
                 setAppPayment: setAppPayment,
+                order: order,
+                setOrder: setOrder,
             }}
         >
             {currentPage}
