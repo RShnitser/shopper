@@ -12,7 +12,6 @@ const PageHome = () => {
 
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(false);
-    //const [cart, setCart] = useState({});
     const [products, setProducts] = useState([]);
     const [pagination, setPagination] = useState({});
     const [categories, setCategories] = useState([]);
@@ -63,7 +62,6 @@ const PageHome = () => {
             try {
                 const products = fetchProducts();
                 const categories = fetchCategories();
-                //const cartParam = getCart(cart.id);
     
                 const [resProd, resCat] = await Promise.all([products, categories]);
              
@@ -72,9 +70,7 @@ const PageHome = () => {
                     const prodData = resProd.data.products;
                     const pagination = resProd.data.pagination;
                     const catData = resCat.data;
-                    //const cartData = resCart.data;
-                    
-                    //setCart(cartData);
+                 
                     setProducts(prodData);
                     setPagination(pagination);
                     setCategories(catData);
@@ -120,7 +116,7 @@ const PageHome = () => {
     }
 
     const setPage = (number) => {
-        //setParams({...params, page : String(number)}); 
+   
         setParams((prevParams) => {
             return {...prevParams, page: String(number)};
         });
@@ -151,17 +147,11 @@ const PageHome = () => {
         }
         else {
 
-            // display = products && products.map(function(product) {
-            //     return <Product key={product.name} product={product} onClick={() => {selectProduct(product)}}/>;
-            // });
-
             display = <Products products={products} selectProduct={selectProduct} />;
 
             pages = <Pagination totalPages={pagination.total_pages} currentPage={pagination.current_page} changePage={setPage} />;
         }
         
-        // const setPage = React.useContext(PageContext);
-
         let dropDown = null;
 
         if(account) {
@@ -183,23 +173,13 @@ const PageHome = () => {
             <SearchBar categories={categories} query={params.query} handleOnChange={handleOnChange} handleOnSubmit={handleOnSubmit}/>
 
             {dropDown}
-           {/* <AppContext.Consumer>
-               {({setAppPage}) => (
-                <DropDown title={"Sign In"}>
-                    <DropDownItem  label={"Sign In"} onClick={() => {setAppPage(APP_PAGE.PAGE_LOGIN)}}/>
-                    <DropDownItem label={"Create Account"} onClick={() => {setAppPage(APP_PAGE.PAGE_CREATE)}}/>
-                </DropDown>
-               )}
-           </AppContext.Consumer> */}
-
+        
             <div className="cart-icon" onClick={() => {setAppPage(APP_PAGE.PAGE_CART)}}>
                 <i className="fa-solid fa-cart-shopping"></i>
                 {itemCount}
             </div>
+            
         </div>
-        {/* <div className="product-grid">
-            {display}
-        </div> */}
         {display}
         {pages}
     </div>

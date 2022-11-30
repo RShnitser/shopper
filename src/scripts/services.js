@@ -1,12 +1,6 @@
-//import Commerce from "@chec/commerce.js";
-
-//export const commerce = new Commerce(process.env.REACT_APP_CHEC_PUBLIC_KEY);
-
-
 const COMMERCE_API = process.env.REACT_APP_CHEC_PUBLIC_KEY;
 
 let nextId = 2;
-//let currentUserID = null;
 
 const users = [
     {
@@ -16,25 +10,10 @@ const users = [
         firstName: "Test",
         lastName: "Test",
         zip: 12345,
-        //cart: InitCart(),
     },
 ];
 
 export function loginUser(email, password) {
-
-    // let result = false;
-  
-    // const userIndex = users.findIndex(function(user) {
-    //     return user.email === email && user.password === password;
-    // });
-
-    // if(userIndex > -1)
-    // {
-    //     currentUserID = users[userIndex].id;
-    //     result = true;
-    // }
-
-    // return result;
 
     return new Promise(async function(success, failure) {
         try {
@@ -45,19 +24,8 @@ export function loginUser(email, password) {
 
             if(userIndex > -1)
             {
-                //currentUserID = users[userIndex].id;
                 const data = users[userIndex];
             
-
-                //const json = await response.json();
-    
-                // const data = json.data.map(function(category) {
-                //     return ({
-                //         id: category.id,
-                //         name: category.name,
-                //     });
-                // });
-    
                 success(data);
             }
             else {
@@ -65,8 +33,8 @@ export function loginUser(email, password) {
             }
         
         }
-        catch(error) {
-            failure(error);
+        catch {
+            failure({error: "User login failed"});
         }
     });
 
@@ -97,8 +65,6 @@ function setUserInfo(_id, email, password, firstName, lastName, zip) {
         firstName: firstName,
         lastName: lastName,
         zip: zip,
-        //cart: InitCart(),
-
     };
     
     return result;
@@ -106,24 +72,27 @@ function setUserInfo(_id, email, password, firstName, lastName, zip) {
 
 export function createUser(email, password, firstName, lastName, zip) {
     
-    let result = {
-        error: "SUCCESS",
-        message: ""
-    }
-    const exists = findUserByEmail(email);
-   
-    if(!exists) {
-     
-        const newUser = setUserInfo(++nextId, email, password, firstName, lastName, zip);
-        users.push(newUser);
-    
-    }
-    else {
-        result.error = "FAILURE"
-        result.message = "Account with this email already exists"
-    }
+        return new Promise(async function(success, failure) {
+            try {
 
-   return result;
+               const exists = findUserByEmail(email);
+
+                if(!exists)
+                {
+                    const newUser = setUserInfo(++nextId, email, password, firstName, lastName, zip);
+                    users.push(newUser);
+
+                    success(newUser);
+                }
+                else {
+                    failure({error: "Account with this email already exists"});
+                }
+            
+            }
+            catch {
+                failure({error: "User creation failed"});
+            }
+        });
 }
 
 export async function fetchProducts(params={}) {
@@ -165,13 +134,6 @@ export async function fetchProducts(params={}) {
                 const data = {
                     products: products,
                     pagination: pagination,
-                    // pagination: {
-                    //     total: parseInt(pagination.total),
-                    //     per_page: parseInt(pagination.per_page),
-                    //     current_page: parseInt(pagination.current_page),
-                    //     total_pages: parseInt(pagination.total_pages),
-                    //     links: pagination.links,
-                    // },
                 }
 
                 success({response, data});
@@ -271,22 +233,15 @@ export async function addToCart(cartId, productID, productQuantity) {
     
                 const data = await response.json();
     
-                // const data = json.data.map(function(category) {
-                //     return ({
-                //         id: category.id,
-                //         name: category.name,
-                //     });
-                // });
-    
                 success({response, data});
             }
             else {
-                failure({error: "invalid http request"});
+                failure({error: "Failed to add to cart"});
             }
         
         }
         catch(error) {
-            failure(error);
+            failure({error: "Failed to add to cart"});
         }
     });
 }
@@ -320,12 +275,12 @@ export async function updateItemInCart(cartId, productID, productQuantity) {
                 success({response, data});
             }
             else {
-                failure({error: "invalid http request"});
+                failure({error: "Failed to update cart item"});
             }
         
         }
         catch(error) {
-            failure(error);
+            failure({error: "Failed to update cart item"});
         }
     });
 }
@@ -335,8 +290,6 @@ export async function removeItemFromCart(cartId, productID) {
         try {
 
             const url = `https://api.chec.io/v1/carts/${cartId}/items/${productID}`;
-
-            //console.log(url);
 
             const headers = {
                 "X-Authorization": COMMERCE_API,
@@ -356,12 +309,12 @@ export async function removeItemFromCart(cartId, productID) {
                 success({response, data});
             }
             else {
-                failure({error: "invalid http request"});
+                failure({error: "failed to remove cart item"});
             }
         
         }
         catch(error) {
-            failure(error);
+            failure({error: "failed to remove cart item"});
         }
     });
 }
@@ -395,57 +348,18 @@ export async function applyDiscount(cartId, discount) {
                 success({response, data});
             }
             else {
-                failure({error: "invalid http request"});
+                failure({error: "Invalid Discount Code"});
             }
         
         }
-        catch(error) {
-            failure(error);
+        catch {
+            failure({error: "Failed to apply discount"});
         }
     });
 }
 
 export async function fetchCheckoutToken(cartId) {
-    // return new Promise(async function(success, failure) {
-    //     try {
-
-    //         const url = `https://api.chec.io/v1/checkouts/${cartId}`;
-
-    //         const params = {
-    //             type: cartId,
-    //         };
-
-    //         for(const key of Object.keys(params)) {
-    //             url.searchParams.append(key, params[key]);
-    //         }
-
-    //         const headers = {
-    //             "X-Authorization": COMMERCE_API,
-    //             "Accept": "application/json",
-    //             "Content-Type": "application/json",
-    //         };
-
-    //         const response = await fetch(url, {
-    //             method: "GET", 
-    //             headers: headers,
-    //         });
-            
-    //         if(response.ok) {
-    
-    //             const data = await response.json();
-    
-    //             success({response, data});
-    //         }
-    //         else {
-    //             failure({error: "invalid http request"});
-    //         }
-        
-    //     }
-    //     catch(error) {
-    //         failure(error);
-    //     }
-    // });
-
+ 
     const url = new URL(`https://api.chec.io/v1/checkouts/${cartId}`);
 
     const params = {
@@ -491,11 +405,6 @@ export async function captureOrder(checkoutID, orderData) {
 
             const url = `https://api.chec.io/v1/checkouts/${checkoutID}`;
 
-            // const body = {
-            //     id: productID,
-            //     quantity: productQuantity,
-            // }
-
             const headers = {
                 "X-Authorization": COMMERCE_API,
                 "Accept": "application/json",
@@ -515,12 +424,12 @@ export async function captureOrder(checkoutID, orderData) {
                 success({response, data});
             }
             else {
-                failure({error: "invalid http request"});
+                failure({error: "Failed to process order"});
             }
         
         }
         catch(error) {
-            failure(error);
+            failure({error: "Failed to process order"});
         }
     });
 }
@@ -545,11 +454,6 @@ async function fetchGET(url, params=[]) {
     
                 const data = await response.json();
     
-                // const data = json.data.map(mapFunction);
-                //const data = json.data;
-                //console.log(json);
-                //const data = {id: "cart"};
-    
                 success({response, data});
             }
             else {
@@ -558,7 +462,7 @@ async function fetchGET(url, params=[]) {
         
         }
         catch(error) {
-            failure(error);
+            failure({error: "invalid http request"});
         }
     });
 }

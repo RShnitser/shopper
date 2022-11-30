@@ -1,13 +1,7 @@
-//import React from "react"
-
 import { INPUT_LOGIN, INPUT_SHIPPING, INPUT_PAYMENT } from "../scripts/constants";
 import { validateEmail, validatePassword, validateSecurityCode, validatePhoneNumber, validateExpirationDate, validateCreditCard } from "../scripts/validations";
-//import { useContext } from "react";
-//import { AppContext } from "../components/ShopperApp/ShopperApp";
 
 const useInputValidations = (data, error, setData, setError, setErrorM) => {
-
-    //const {appPayment, setAppPayment} = useContext(AppContext);
 
     const handleInput = ({target: {name, value}}) => {
       
@@ -24,23 +18,11 @@ const useInputValidations = (data, error, setData, setError, setErrorM) => {
         
             if(mask.length) {
                 mask = mask.match(new RegExp(".{1,4}", "g")).join(" ");
-                // setData((prevState) => ({
-                //     ...prevState,
-                //     [name]: mask,
-                // }));
-                // setData( (prevData) => {
-                //     return { ...prevData, [name]: mask,}
-                // });
+            
                 result = mask;
             }
             else {
-                // setData((prevState) => ({
-                //     ...prevState,
-                //     [name]: "",
-                // }));
-                // setData( (prevData) => {
-                //     return { ...prevData, [name]: "",}
-                // });
+              
                 result = "";
             }
         }
@@ -107,10 +89,11 @@ const useInputValidations = (data, error, setData, setError, setErrorM) => {
             break;
 
             case INPUT_LOGIN.LOGIN_CONFIRM:
-                //const {account: {password}} = this.state;
+              
                 if(data.password !== value) {
                     errorText = "Must match password";
                 }
+
             break;
 
             case INPUT_LOGIN.LOGIN_ZIP:
@@ -128,14 +111,7 @@ const useInputValidations = (data, error, setData, setError, setErrorM) => {
             break;
 
             case INPUT_PAYMENT.PAYMENT_NUMBER:
-                // this.setState(function(prevState){
-                //     return({
-                //         payment: {
-                //             ...prevState.payment,
-                //             cardType: findCardType(value),
-                //         }
-                //     });
-                // });
+              
                 setData((prevPayment) => {
                    return({
                         ...prevPayment,

@@ -15,7 +15,6 @@ const INIT_SHIPPING = {
     country: "",
     city: "",
     state: "",
-    //cell: "",
     phone: "",
 }
 
@@ -41,7 +40,6 @@ const PageShipping = () => {
             try {
                
                 const resToken = await fetchCheckoutToken(cart.id)
-                // const categories = fetchCategories();
               
                 if(resToken && resToken.response.ok) {
 
@@ -53,13 +51,12 @@ const PageShipping = () => {
                     const countryRes = await fetchCountries(resToken.data.id);
 
                     if(countryRes && countryRes.response.ok) {
-                        //console.log(countryRes.data);
+                     
                         const countryData = countryRes.data.countries;
                         
                         const countryArray = [];
                         for(const key of Object.keys(countryData)) {
-                            // console.log(countryData[key]);
-                            //countryArray.push(countryData[key])
+                       
                             countryArray.push(key);
                         }
 
@@ -92,23 +89,15 @@ const PageShipping = () => {
                         }
                     }
         
-                //     const prodData = resProd.data.products;
-                //     const pagination = resProd.data.pagination;
-                //     const catData = resCat.data;
-                  
-                //     setProducts(prodData);
-                //     setPagination(pagination);
-                //     setCategories(catData);
-                //     setLoading(false);
+            
                 }
-                // else {
-                //     setLoading(false);
-                // }
+                else {
+                    setLoading(false);
+                }
             }
             catch(error) {
                 setLoading(false);
-                setError(true);
-                //console.log(error);
+                setErrorM(error.error)
             }
         }
 
@@ -126,43 +115,26 @@ const PageShipping = () => {
 
     const handleShippingMethod = ({target: {value}}) => {
 
-        //const {updateShippingMethod} = this.props;
         const result = shippingMethods.find(function(method) {
             return method.id === value;
         });
        
-        //updateShippingMethod(value);
-
-        
-        // this.setState({
-        //     shippingMethod: value,
-        // });
-        //console.log(value);
         setShippingMethod(result);
     }
 
     const handleOnSubmit = () => {
 
-        //const {setData} = this.props;
-
         const errorCheck = checkErrorBeforeSave();
 
         if(!errorCheck) {
-            //setData(STATE_DATA.STATE_SHIPPING, this.state.shipping);
             setAppShipping(shipping);
             setAppShippingMethod(shippingMethod);
             setAppPage(APP_PAGE.PAGE_PAYMENT);
-            //setData(STATE_DATA.STATE_PAGE, PAGE_TYPE.PAGE_PAYMENT);
         }
 
     }
 
     const mapData = (data) => {
-
-        //const {error} = this.state;
-       
-        //const onChange = this.handleOnChange;
-        //const onBlur = this.handleBlur;
 
         const labels = data && data.map(function(item) {
 
@@ -183,19 +155,8 @@ const PageShipping = () => {
 
     const mapShippingMethods = () => {
 
-        //const {shippingMethod} = this.state;
-        
-        //const onChange = this.handleShippingMethod;
-        
         const result = shippingMethods && shippingMethods.map(function(item) {
-            //console.log(item);
-            // let link = <div></div>;
-            // if(index + 1 === array.length){
-            //     link =  
-            //     <div>
-            //         <a href="#!">View Shipping Details</a>        
-            //     </div>
-            // }
+         
             return(
                 <React.Fragment key={item.id}>
                     <label>
@@ -209,7 +170,6 @@ const PageShipping = () => {
                     </label>
                     <div className="label-text">{item.description}</div>
                     <div className="label-text">{item.price.formatted_with_symbol}</div>
-                    {/* {link} */}
                 </React.Fragment>
             );
         })
@@ -217,19 +177,13 @@ const PageShipping = () => {
         return result;
     }
 
-    //const countries = ["USA"];
-    
     let result = null;
     
     if(loading) {
         result = <div>Loading...</div>;
     }
-    // else if(error) {
-        //     result = <div>Error</div>;
-        // }
     else {
-            //const regions = ["NY"];
-    
+           
         const shipData = [
             {label: "Address Title", type: "text", name: INPUT_SHIPPING.SHIPPING_TITLE},
             {label: "Name-Surname", type: "text", name: INPUT_SHIPPING.SHIPPING_NAME},
@@ -239,7 +193,6 @@ const PageShipping = () => {
             {label: "City", type: "text", name: INPUT_SHIPPING.SHIPPING_CITY},
             {label: "State", type: "option", name: INPUT_SHIPPING.SHIPPING_STATE, children: regions},
             {label: "Telephone", type: "tel", name: INPUT_SHIPPING.SHIPPING_PHONE},
-            // {label: "Cell Phone", type: "tel", name: INPUT_SHIPPING.SHIPPING_CELL},
         ];
 
         const buttonNext = <Button 
@@ -248,13 +201,18 @@ const PageShipping = () => {
         />
 
         const buttonBack =  <Button 
-            text="HOME"
+            text="BACK TO CART"
+            className="product-button"
             onClick={onHandleBack}
         />
 
-        result = <InfoForm progress={1} buttonBack={buttonBack} buttonNext={buttonNext}>
+        result = <InfoForm 
+            progress={1} 
+            buttonBack={buttonBack} 
+            buttonNext={buttonNext}
+            errorM={errorM}
+        >
         
-        {/* <ProgressBar progress={1}/> */}
         <h2 className="bold">Shipping Information</h2>
         <div className="display-grid grid-col-3">
             {mapData(shipData)}

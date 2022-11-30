@@ -93,7 +93,6 @@ const Pagination = ({totalPages, currentPage, changePage}) => {
         <ul  className="page-container display-flex">
             <li>
                 <PageButton
-                    // label={"<"}
                     className="page-button"
                     label={<i className="fa-solid fa-chevron-left"></i>}
                     page={currentPage - 1} 

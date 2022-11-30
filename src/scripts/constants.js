@@ -30,7 +30,6 @@ export const INPUT_SHIPPING = {
     SHIPPING_COUNTRY: "country",
     SHIPPING_CITY: "city",
     SHIPPING_STATE: "state",
-    //SHIPPING_CELL: "cell",
     SHIPPING_PHONE: "phone",
 };
 

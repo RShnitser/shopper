@@ -1,9 +1,11 @@
 import React from "react";
 import "./Button.css";
 
-const Button = ({text, onClick}) => {
+const Button = ({text, onClick, className}) => {
 
-    const result = <button type="button" className="btn" onClick={onClick}>
+    const btnClass = className ? className : "btn";
+
+    const result = <button type="button" className={btnClass} onClick={onClick}>
         <div>{text}</div>
     </button>
 

@@ -9,15 +9,10 @@ import PageShipping from "../PageCart/PageShipping";
 import PagePayment from "../PageCart/PagePayment";
 import PageConfirmation from "../PageCart/PageConfirmation";
 
-export const AppContext = React.createContext({
-    // page: APP_PAGE.PAGE_HOME,
-    // setPage: (page) => {},
-})
+export const AppContext = React.createContext({})
 
 const ShopperApp = () => {
-
     
-
     const [page, setPage] = useState(APP_PAGE.PAGE_HOME);
     const [account, setAccount] = useState(null);
     const [appShipping, setAppShipping] = useState(null);

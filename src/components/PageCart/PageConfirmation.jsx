@@ -10,7 +10,7 @@ const PageConfirmation = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(false);
 
-    const {setAppPage, setAppShipping, setCart, setCheckout, setAppShippingMethod, setAppPayment, setOrder} = useContext(AppContext);
+    const {order, setAppPage, setAppShipping, setCart, setCheckout, setAppShippingMethod, setAppPayment, setOrder} = useContext(AppContext);
 
     const fetchCartData = async () => {
 
@@ -65,16 +65,21 @@ const PageConfirmation = () => {
 
         const buttonBack = <Button 
             text="HOME"
+            className="product-button"
             onClick={onHandleBack}
         />
 
-        result = <InfoForm progress={2} buttonBack={buttonBack}>
+        result = <InfoForm 
+            progress={2} 
+            buttonBack={buttonBack}
+        >
 
             <h2 className="bold">Confirmation</h2>
             <div className="confirm-container">
                 <div className="confirm-check">
                     <i className="fa-solid fa-check"></i>
                 </div>
+                <div className="confirm-text">{`Order ID: ${order.id}`}</div>
                 <div className="confirm-text">
                     Congratulations,<br/>
                     Your order is accepted.

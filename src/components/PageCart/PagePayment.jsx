@@ -28,27 +28,9 @@ const PagePayment = () => {
 
     const {account, checkout, shipping, appShippingMethod, setAppPage, setAppPayment, setOrder} = useContext(AppContext);
 
-    // const sanitizedLineItems = (lineItems) => {
-    //     return lineItems.reduce((data, lineItem) => {
-    //       const item = data;
-    //       let variantData = null;
-    //       if (lineItem.selected_options.length) {
-    //         variantData = {
-    //           [lineItem.selected_options[0].group_id]: lineItem.selected_options[0].option_id,
-    //         };
-    //       }
-    //       item[lineItem.id] = {
-    //         quantity: lineItem.quantity,
-    //         variants: variantData,
-    //       };
-    //     return item;
-    //     }, {});
-    // }
-      
     const handleCaptureCheckout = async () => {
 
         const orderData = {
-            //line_items: sanitizedLineItems(cart.line_items),
             line_items: checkout.line_items,
 
             customer: {
@@ -74,7 +56,6 @@ const PagePayment = () => {
               gateway: "test_gateway",
               card: {
                 number: payment.cardNumber,
-                //number: "4242424242424242",
                 expiry_month: payment.expire_m,
                 expiry_year: payment.expire_y,
                 cvc: payment.cvv,
@@ -94,7 +75,7 @@ const PagePayment = () => {
     
               
                 const orderData = resOrder.data;
-                //console.log(orderData);
+        
                 setOrder(orderData);
                 setAppPage(APP_PAGE.PAGE_CONFIRMATION);
                 setLoading(false)
@@ -106,9 +87,7 @@ const PagePayment = () => {
         }
         catch(error) {
            setLoading(false);
-           setErrorM("Error processing payment");
-           console.error(error);
-            //setError(true);
+           setErrorM(error.error);
         }
     }
 
@@ -123,21 +102,13 @@ const PagePayment = () => {
         if(!errorCheck) {
            
             setAppPayment(payment);
-            //setAppPage(APP_PAGE.PAGE_CONFIRMATION);
             await handleCaptureCheckout();
         }
     }
 
     const mapData = (data) => {
 
-        //const {payment, error} = this.state;
-
-        //const onChange = this.handleOnChange;
-        //const onBlur = this.handleBlur;
-
         let result = data && data.map(function(item) {
-
-            //console.log(payment);
 
             return(<InputField 
                 key={item.label} 
@@ -161,9 +132,6 @@ const PagePayment = () => {
 
     const mapExp = (inputData) => {
         
-        //const onChange = this.handleOnChange;
-        //const onBlur = this.handleBlur;
-
         let errorText = error["expireError"] &&  (<div className="error">{error["expireError"]}</div>);
 
         let result = <>
@@ -219,12 +187,13 @@ const PagePayment = () => {
     ]
 
     const buttonNext = <Button 
-        text="CHECKOUT"
+        text="PAY FOR ORDER"
         onClick={handleOnSubmit}
     />
 
     const buttonBack = <Button 
-        text="HOME"
+        text="BACK TO SHIPPING"
+        className="product-button"
         onClick={onHandleBack}
     />
 
@@ -233,12 +202,15 @@ const PagePayment = () => {
     if(loading) {
         result = <div>Processing Payment...</div>;
     }
-    // else if(error) {
-        //     result = <div>Error</div>;
-        // }
+ 
     else {
 
-        result = <InfoForm progress={2} buttonBack={buttonBack} buttonNext={buttonNext}>
+        result = <InfoForm 
+            progress={2} 
+            buttonBack={buttonBack} 
+            buttonNext={buttonNext}
+            errorM={errorM}
+        >
         
     
 

@@ -1,18 +1,15 @@
-/* .page-margin-padding {
-    padding: 20px;
-    margin: 20px;
-  } */
-
-.login-width {
-    max-width: 350px;
-}
 
 .login-container {
+    max-width: 350px;
     padding: 20px;
     margin: 20px auto;
 }
 
-
+.login-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
 
 .login-btn {
     display: block;
