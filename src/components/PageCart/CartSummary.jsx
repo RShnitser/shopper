@@ -1,15 +1,14 @@
 import React, { useState, useContext } from "react";
 import { AppContext } from "../ShopperApp/ShopperApp";
-import { APP_PAGE, INPUT_SHIPPING } from "../../scripts/constants";
+import { APP_PAGE, INPUT_SHIPPING, INPUT_PAYMENT, CARD_ICON } from "../../scripts/constants";
 import { applyDiscount } from "../../scripts/services";
 
 const CartSummary = ({button}) => {
 
     const [discount, setDiscount] = useState("");
+    const [errorM, setErrorM] = useState(undefined);
 
-    const {currentPage, cart, shipping, setCart, appShippingMethod} = useContext(AppContext);
-
-    //const quantity = cart.totalItems;
+    const {currentPage, cart, shipping, payment, setCart, appShippingMethod} = useContext(AppContext);
 
     const handleOnSubmit = async (e) => {
 
@@ -23,8 +22,8 @@ const CartSummary = ({button}) => {
                 setCart(result.data);
             }
         }
-        catch {
-
+        catch(error) {
+            setErrorM(error.error);
         }
     }
 
@@ -69,14 +68,15 @@ const CartSummary = ({button}) => {
 
     if(currentPage === APP_PAGE.PAGE_CART)
     {
-        //const error = this.state.error && <div className="error">{this.state.error}</div>
+        const errorText =  errorM && <div className="error label-container">{errorM}</div>
+
         discountForm = <form  className="border-bottom" onSubmit={handleOnSubmit}>
                     <div>Do you have a promo code?</div>
                     <div className="display-flex">
                         <input className="summary-promo" type="text" placeholder="Code" onChange={handleChange}/>
                         <input className="summary-promo bold" type="submit" value="APPLY"/>
                     </div>
-                    {/* {error} */}
+                    {errorText}
                  </form>
     }
 
@@ -94,22 +94,11 @@ const CartSummary = ({button}) => {
                         <img src={product.image.url} alt={product.name}/>
                     </div>
                     <div className="display-grid grid-col-2 summary-item">
-                        {/* <div>Color:</div>
-                        <div>{product.color}</div>
-                        <div>Size:</div>
-                        <div>{product.size}</div> */}
                         <div>Quantity:</div>
                         <div>{product.quantity}</div>
                         <div>Price:</div>
                         <div className="summary-item bold">{`$${(product.price.raw * product.quantity).toFixed(2)}`}</div>
                     </div>
-                    {/* <div>
-                    </div> */}
-                    {/* <div>
-                        <div className="product-bold">{product.name}</div>
-                    </div> */}
-                    {/* <div className="display-flex space-between">
-                    </div> */}
                 </div>
             );
         });
@@ -126,24 +115,23 @@ const CartSummary = ({button}) => {
 
         shipmentType = <>
                              <h2 className="bold">Shipment Method</h2>
-                             {/* <div className="bold">{appShippingMethod.name}</div> */}
                              <div>{appShippingMethod.description}</div>
                         </>
 
     }
 
-    // if(page === PAGE_TYPE.PAGE_CONFIRMATION) {
+    if(currentPage === APP_PAGE.PAGE_CONFIRMATION) {
 
-    //     paymentInfo = <div className="border-bottom">
-    //         <h2 className="bold">Payment</h2>
-    //             <div className="input-flex">
-    //                 <div className="card-icon">
-    //                     <img src={CARD_ICON[payment.cardType]} alt="card"/>
-    //                 </div>
-    //                 <div>{`**** ${payment[INPUT_PAYMENT.PAYMENT_NUMBER].slice(-4)}`}</div>
-    //             </div>
-    //     </div>
-    // }
+        paymentInfo = <div>
+            <h2 className="bold">Payment</h2>
+                <div className="display-flex">
+                    <div className="card-icon">
+                        <img src={CARD_ICON[payment.cardType]} alt="card"/>
+                    </div>
+                    <div>{`**** ${payment[INPUT_PAYMENT.PAYMENT_NUMBER].slice(-4)}`}</div>
+                </div>
+        </div>
+    }
 
     const result =   <div className="summary-container shadow">
         <h2 className="align-right border-bottom bold">Summary</h2>

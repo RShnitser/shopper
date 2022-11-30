@@ -15,7 +15,6 @@ const InputField = ({label, error, errorM, type, children, value, cardType, ...p
     let result = null;
     let input;
     let cardIcon = null;
-    // const vertical = true;
     
     const passwordEye = type === "password" ? (
         <button type="button" className="input-icon" onClick={handleToggle}>
@@ -39,7 +38,6 @@ const InputField = ({label, error, errorM, type, children, value, cardType, ...p
 
     if(type === "card") {
         finalType = "text";
-        //cardType = "MASTER_CARD";
         if((!error || !error.cardError) && CARD.includes(cardType)) {
             cardIcon = <div className="card-icon card-icon-margin">
                 <img src={CARD_ICON[cardType]} alt="card"/>
@@ -51,7 +49,6 @@ const InputField = ({label, error, errorM, type, children, value, cardType, ...p
     {
 
         input = <select className="input-option"  {...props}>
-                    {/* <option disabled hidden value={0}>Select</option> */}
                     {
                         children && children.map(function(data) {
                             return(
@@ -64,37 +61,19 @@ const InputField = ({label, error, errorM, type, children, value, cardType, ...p
         input =  <input className={inputClass} value={value} type={finalType}{...props}/>;
     }
 
-    // if(vertical) {
-        result = <>
-                <label className="label-text grid-span-2" htmlFor="data.label">
-                {label}
-            </label>
-            <div className="error text-end">{errorM || ""}</div>
-            <div className="display-flex grid-span-3">
-                {input}
-                {passwordEye}
-                {cardIcon}
-            </div>
-            {passDesc}
-        </>
-    // }
-    // else {
-    //     const error = errorM ? <div className="error grid-span-2">{errorM}</div> : <div className="grid-span-2"></div>;
-    //     result = <>
-    //     <label className="label-text" htmlFor="data.label">
-    //         {label}
-    //     </label>
-    //     <div className="input-flex grid-span-2">
-    //         {input}
-    //         {passwordEye}
-    //         {cardIcon}
-    //     </div>
-    //     <div></div>
-    //     {passDesc}
-    //     {error}
-    // </>;
-    // }
-
+    result = <>
+            <label className="label-text grid-span-2" htmlFor="data.label">
+            {label}
+        </label>
+        <div className="error text-end">{errorM || ""}</div>
+        <div className="display-flex grid-span-3">
+            {input}
+            {passwordEye}
+            {cardIcon}
+        </div>
+        {passDesc}
+    </>
+  
     return(result);
 }
 

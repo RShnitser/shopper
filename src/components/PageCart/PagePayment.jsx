@@ -5,6 +5,7 @@ import InputField from "../InputField/InputField";
 import { INPUT_PAYMENT, APP_PAGE } from "../../scripts/constants";
 import useInputValidations from "../../hooks/UseInputValidations";
 import { AppContext } from "../ShopperApp/ShopperApp";
+import { captureOrder } from "../../scripts/services";
 
 const INIT_PAYMENT = {
     
@@ -19,38 +20,95 @@ const INIT_PAYMENT = {
 const PagePayment = () => {
 
     const [payment, setPayment] = useState(INIT_PAYMENT);
+    const [loading, setLoading] = useState(false);
     const [error, setError] = useState({});
     const [errorM, setErrorM] = useState(undefined);
 
     const [handleInput, handleBlur, checkErrorBeforeSave] = useInputValidations(payment, error, setPayment, setError, setErrorM);
 
-    const {setAppPage, setAppPayment} = useContext(AppContext);
+    const {account, checkout, shipping, appShippingMethod, setAppPage, setAppPayment, setOrder} = useContext(AppContext);
+
+    const handleCaptureCheckout = async () => {
+
+        const orderData = {
+            line_items: checkout.line_items,
+
+            customer: {
+              firstname: account.firstName,
+              lastname: account.lastName,
+              email: account.email,
+            },
+
+            shipping: {
+              name: shipping.title,
+              street: shipping.address,
+              town_city: shipping.city,
+              county_state: shipping.state,
+              postal_zip_code: shipping.zip,
+              country: shipping.country,
+            },
+
+            fulfillment: {
+              shipping_method: appShippingMethod.id
+            },
+
+            payment: {
+              gateway: "test_gateway",
+              card: {
+                number: payment.cardNumber,
+                expiry_month: payment.expire_m,
+                expiry_year: payment.expire_y,
+                cvc: payment.cvv,
+                postal_zip_code: shipping.zip,
+              },
+            },
+        };
+
+        try {
+            
+            setLoading(true);
+            const resOrder = await captureOrder(checkout.id, orderData);
+
+           
+        
+            if(resOrder && resOrder.response.ok) {
+    
+              
+                const orderData = resOrder.data;
+        
+                setOrder(orderData);
+                setAppPage(APP_PAGE.PAGE_CONFIRMATION);
+                setLoading(false)
+                
+            }
+            else {
+                setLoading(false);
+            }
+        }
+        catch(error) {
+           setLoading(false);
+           setErrorM(error.error);
+        }
+    }
 
     const onHandleBack = () => {
         setAppPage(APP_PAGE.PAGE_SHIPPING);
     }
 
-    const handleOnSubmit = () => {
+    const handleOnSubmit = async () => {
 
         const errorCheck = checkErrorBeforeSave();
 
         if(!errorCheck) {
            
             setAppPayment(payment);
-            setAppPage(APP_PAGE.PAGE_CONFIRMATION);
+            await handleCaptureCheckout();
         }
     }
 
     const mapData = (data) => {
 
-        //const {payment, error} = this.state;
-
-        //const onChange = this.handleOnChange;
-        //const onBlur = this.handleBlur;
-
         let result = data && data.map(function(item) {
-
-            //console.log(payment);
 
             return(<InputField 
                 key={item.label} 
@@ -74,9 +132,6 @@ const PagePayment = () => {
 
     const mapExp = (inputData) => {
         
-        //const onChange = this.handleOnChange;
-        //const onBlur = this.handleBlur;
-
         let errorText = error["expireError"] &&  (<div className="error">{error["expireError"]}</div>);
 
         let result = <>
@@ -132,28 +187,43 @@ const PagePayment = () => {
     ]
 
     const buttonNext = <Button 
-        text="CHECKOUT"
+        text="PAY FOR ORDER"
         onClick={handleOnSubmit}
     />
 
     const buttonBack = <Button 
-        text="HOME"
+        text="BACK TO SHIPPING"
+        className="product-button"
         onClick={onHandleBack}
     />
 
-    const result = <InfoForm progress={2} buttonBack={buttonBack} buttonNext={buttonNext}>
+    let result = null;
     
-    {/* <ProgressBar progress={2}/> */}
+    if(loading) {
+        result = <div>Processing Payment...</div>;
+    }
+ 
+    else {
 
-    <div className="display-grid grid-col-3">
-        {mapData(paymentData1)}
-        {mapExp(paymentData2)}
-        {mapData(paymentData3)}
-    </div>
-   
-   
+        result = <InfoForm 
+            progress={2} 
+            buttonBack={buttonBack} 
+            buttonNext={buttonNext}
+            errorM={errorM}
+        >
+        
+    
 
+        <h2 className="bold">Payment Information</h2>
+
+        <div className="display-grid grid-col-3">
+            {mapData(paymentData1)}
+            {mapExp(paymentData2)}
+            {mapData(paymentData3)}
+        </div>
+   
     </InfoForm>;
+    }
 
     return(result);
 }

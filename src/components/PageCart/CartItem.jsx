@@ -61,17 +61,6 @@ const CartItem = ({product}) => {
         </div>
        
         <div className="cart-item-price cart-item-col bold">{`$${(product.price.raw * product.quantity).toFixed(2)}`}</div>
-
-        {/* <div className="product-container">
-            <div className="product-info-container">
-                <div>
-                </div>
-            </div>
-        </div> */}
-
-        {/* <div className="bold">{product.price.formatted_with_symbol}</div> */}
-       
-       
     </div>
 
     return(result);
